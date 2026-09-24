@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TerraConnect | Public Monitoring</title>
     
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/78ffcf4a572347f28b01389a97030d0b88dc6b0f/TERRACONNECT_LOGO.png">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/78ffcf4a572347f28b01389a97030d0b88dc6b0f/TERRACONNECT_LOGO.png">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/TERRACONNECT_LOGO.png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/TERRACONNECT_LOGO.png">
 
     <meta property="og:type" content="website">
     <meta property="og:title" content="TerraConnect Technologies">
     <meta property="og:description" content="Environmental Animal IOT Monitoring Center">
-    <meta property="og:url" content="https://ashuhda-tech.github.io/TerraConnect_Technologies/">
-    <meta property="og:image" content="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/78ffcf4a572347f28b01389a97030d0b88dc6b0f/TERRACONNECT_LOGOBRAND.png">
+    <meta property="og:url" content="https://nhanderu-lab.github.io/Tupan/">
+    <meta property="og:image" content="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/TERRACONNECT_LOGOBRAND.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -133,7 +133,7 @@
 
     <div id="page-loader">
         <video autoplay muted loop playsinline class="loader-visual">
-            <source src="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/main/assets/VIDEO/LOADING.mp4" type="video/mp4">
+            <source src="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/VIDEO/LOADING.mp4" type="video/mp4">
         </video>
     </div>
 
@@ -161,7 +161,7 @@
 
         <div class="sidebar-bottom">
             <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 30px;">
-                <a href="https://ashuhda-tech.github.io/TerraConnect_Technologies/" class="btn-back a70-font" style="margin-bottom: 0; width: 100%; box-sizing: border-box; display: flex; justify-content: center; align-items: center; gap: 8px;">
+                <a href="https://nhanderu-lab.github.io/Tupan/" class="btn-back a70-font" style="margin-bottom: 0; width: 100%; box-sizing: border-box; display: flex; justify-content: center; align-items: center; gap: 8px;">
                     <i class="fas fa-leaf"></i> POWERED BY TERRACONNECT
                 </a>
             </div>
@@ -573,7 +573,7 @@ async function loadData() {
             if (videoElement) {
                 const videoSource = videoElement.querySelector('source');
                 const videoFileName = animalTypeRaw.toUpperCase().trim() + ".mp4";
-                const videoBaseURL = "https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/main/assets/VIDEO/";
+                const videoBaseURL = "https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/VIDEO/";
 
                 videoSource.src = `${videoBaseURL}${videoFileName}`;
                 videoElement.load();
@@ -1385,7 +1385,7 @@ Reference the environmental data with the biological and veterinary data. Is the
         const flagElement = document.getElementById('gh-version-flag');
         if (!flagElement) return;
 
-        const repoUrl = 'https://api.github.com/repos/ashuhda-tech/TerraConnect_Technologies/commits?per_page=1';
+        const repoUrl = 'https://api.github.com/repos/nhanderu-lab/Tupan/commits?per_page=1';
 
         try {
             const response = await fetch(repoUrl);
