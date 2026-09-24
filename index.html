@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Portal | Authentication</title>
+    
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/main/assets/IMAGE/LOGOS%20OROBORO_NO_BKGRD.png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/main/assets/IMAGE/LOGOS%20OROBORO_NO_BKGRD.png">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="TerraConnect Technologies">
+    <meta property="og:description" content="Environmental Animal IOT Monitoring Center">
+    <meta property="og:url" content="https://ashuhda-tech.github.io/TerraConnect_Technologies/">
+    <meta property="og:image" content="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/main/TERRACONNECT_LOGOBRAND.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @font-face {font-family: 'A760-Roman-Smc';src: url('A760-Roman-Smc Regular.ttf') format('truetype'); font-weight: normal;font-style: normal;}
+        :root {--bg-color: #0a0c10;--card-bg: rgba(7, 11, 20, 0.85);--card-hover: rgba(17, 24, 39, 0.9);--card-border: rgba(31, 41, 55, 0.5);--accent-dark: #d1b38b;--accent-light: #f4e9d8;--text-main: #f4e9d8;--text-muted: #d1b38b;--border-radius: 10px;--status-ok: #48bb3a;--status-error: #ef4e4e;--font-standard: 'Inter', sans-serif;}
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {background-color: var(--bg-color);color: var(--text-main);font-family: var(--font-standard);display: flex;flex-direction: column; min-height: 100vh;overflow: hidden;}
+        #intro-overlay {position: fixed;top: 0;left: 0;width: 100%;height: 100%;background-color: #000;z-index: 9999;display: flex;justify-content: center;align-items: center;transition: opacity 1s ease-out;}
+        #intro-overlay video {width: 100%;height: 100%;object-fit: cover;}
+        .app-version-flag {position: fixed;bottom: 10px;left: 10px;background: rgba(0, 0, 0, 0.6);color: rgba(255, 255, 255, 0.3);padding: 4px 8px;border-radius: 4px;font-size: 0.55rem;font-family: 'Inter', monospace;z-index: 99999;pointer-events: none;border: 1px solid rgba(255, 255, 255, 0.1);backdrop-filter: blur(2px);transition: opacity 0.5s;}
+        
+        .skip-btn { position: absolute; bottom: 40px; right: 40px; background: rgba(0, 0, 0, 0.4); color: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255, 255, 255, 0.3); padding: 8px 16px; border-radius: 6px; cursor: pointer; z-index: 10000; font-family: var(--font-standard); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; backdrop-filter: blur(5px); }
+        .skip-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; border-color: #fff;}
+        .video-bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; }
+        .video-bg-container video { min-width: 100%; min-height: 100%; width: auto; height: auto; position: absolute; top: 50%; left: 50%;transform: translate(-50%, -50%);object-fit: cover; }
+        .video-overlay {position: fixed;top: 0; left: 0;width: 100%;height: 100%;background: rgba(0, 0, 0, 0.6);  z-index: -1; }
+        
+        .container { flex-grow: 1; display: flex;  justify-content: center; align-items: center;width: 100%;padding: 20px; z-index: 1; overflow-y: auto;}
+        .auth-card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--border-radius); padding: 40px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7); transition: all 0.3s ease; width: 100%; max-width: 450px; backdrop-filter: blur(10px);  }
+        .auth-card:hover { background-color: var(--card-hover); border-color: var(--accent-dark); }
+        h1 {font-family: 'A760-Roman-Smc', sans-serif; font-size: 2.2rem;text-align: center;margin-bottom: 10px;color: var(--accent-light);text-transform: uppercase; letter-spacing: 2px; line-height: 1.2; word-wrap: break-word;}
+        
+        p.subtitle { text-align: center; color: var(--text-muted); font-size: 0.9rem;  margin-bottom: 30px;}
+        .auth-form { display: flex; flex-direction: column; gap: 15px; }
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 0.85rem; color: var(--text-muted); }
+        input {background-color: rgba(17, 24, 39, 0.8);border: 1px solid var(--card-border);border-radius: 6px;padding: 12px;color: var(--text-main);font-family: var(--font-standard);outline: none; transition: border-color 0.3s;}
+        input:focus { border-color: var(--accent-dark); }
+        input:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary {background-color: var(--accent-dark);color: var(--card-bg);border: none;border-radius: 6px;padding: 12px; font-weight: bold;cursor: pointer; transition: background-color 0.3s, transform 0.1s; margin-top: 10px;  }
+        .btn-primary:hover:not(:disabled) { background-color: var(--accent-light); }
+        .btn-primary:active:not(:disabled) { transform: scale(0.98); }
+        .btn-primary:disabled { background-color: #555; color: #888; cursor: not-allowed; }
+        .divider { display: flex; align-items: center; text-align: center; margin: 25px 0; color: var(--card-border);}
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--card-border); }
+        .divider span { padding: 0 10px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); }
+        .social-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .btn-social { background-color: transparent; border: 1px solid var(--card-border); border-radius: 6px;padding: 10px; color: var(--text-main); cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center;}
+        .btn-social:hover { border-color: var(--accent-dark); background-color: rgba(209, 179, 139, 0.1); }
+        .footer-link { margin-top: 25px; text-align: center; font-size: 0.85rem; color: var(--text-muted); }
+        .footer-link a { color: var(--accent-dark); text-decoration: none; font-weight: bold; }
+        .footer-link a:hover { text-decoration: underline; }
+
+        /* ----- FLOATING TOP NAVIGATION RIBBON ----- */
+        .top-nav-ribbon {position: fixed;top: 30px;right: 40px;display: flex;gap: 15px;z-index: 1000;}
+        .floating-nav-btn {background: rgba(7, 11, 20, 0.6);border: 1px solid var(--accent-dark);color: var(--accent-dark);padding: 10px 20px;border-radius: 30px;text-decoration: none;font-family: var(--font-standard);font-size: 0.85rem;font-weight: bold;display: flex;align-items: center;gap: 8px;backdrop-filter: blur(5px);transition: all 0.3s ease;text-transform: uppercase;letter-spacing: 1px;}
+        .floating-nav-btn:hover {background: var(--accent-dark);color: var(--bg-color);transform: scale(1.05);box-shadow: 0 4px 15px rgba(209, 179, 139, 0.2);}
+        
+        @media (max-width: 600px) {
+            .top-nav-ribbon {top: 20px;right: 20px;gap: 10px;}
+            .floating-nav-btn {padding: 8px 15px;font-size: 0.75rem;}
+        }
+
+        .message { font-size: 0.8rem; text-align: center; margin-top: 10px; min-height: 1.2rem; }
+        .error { color: var(--status-error); }
+        .success { color: var(--status-ok); }
+        .hidden { display: none; }
+
+        /* ----- GLOBAL FOOTER ----- */
+        footer {width: 100%;text-align: center;padding: 15px;background: rgba(10, 12, 16, 0.8);backdrop-filter: blur(10px);border-top: 1px solid var(--card-border);position: relative;z-index: 100;flex-shrink: 0; }
+        .footer-text {font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-standard); letter-spacing: 0.5px;}
+        .footer-text a {color: var(--accent-dark); text-decoration: none; font-weight: 600; transition: color 0.3s ease; margin-left: 5px;}
+        .footer-text a:hover {color: var(--text-main); }
+        
+        /* NEW: MOBILE RESPONSIVENESS */
+        @media (max-width: 480px) {.auth-card { padding: 30px 20px; } h1 { font-size: 1.8rem; }}
+    </style>
+
+    <script src="https://www.google.com/recaptcha/api.js?render=6LcR7gQtAAAAACIEVWPRYCkIf1DRhBQW_OgfipT8"></script>
+</head>
+<body>
+
+<div id="intro-overlay">
+    <video id="introVideo" autoplay muted playsinline>
+        <source src="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/f70df67cca55c92bceca21a167087da798258b65/assets/VIDEO/INTRO.mp4" type="video/mp4">
+    </video>
+    <button class="skip-btn" onclick="finishIntro()">Skip Intro</button>
+</div>
+
+<div class="video-bg-container">
+    <video autoplay loop muted playsinline 
+           poster="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/b1c4c1f080d96ec1c35ff823176f214b761eb6a6/assets/WALLPAPER_MAINDASHBOARD.png">
+        <source src="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/b1c4c1f080d96ec1c35ff823176f214b761eb6a6/assets/VIDEO/RIVER_MAINDASHBOARD.mp4" type="video/mp4">
+        <img src="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/b1c4c1f080d96ec1c35ff823176f214b761eb6a6/assets/WALLPAPER_MAINDASHBOARD.png" title="Seu navegador não suporta vídeos.">
+    </video>
+</div>
+<div class="video-overlay"></div>
+
+<!-- NEW FLOATING RIBBON WITH BOTH BUTTONS -->
+<div class="top-nav-ribbon">
+    <a href="about_us.html" class="floating-nav-btn" title="Discover Our Vision">
+        <i class="fas fa-seedling"></i> About Us
+    </a>
+    <a href="store.html" class="floating-nav-btn" title="View Hardware & Subscriptions">
+        <i class="fas fa-store"></i> Store & Plans
+    </a>
+</div>
+
+<!-- 
+    CORREÇÃO 4: O container empurra o footer de forma responsiva para a base da página 
+-->
+<div class="container">
+    <div class="auth-card">
+        <div id="login-section">
+            <h1>TerraConnect Technologies</h1>
+            <p class="subtitle">Access your sensor hub</p>
+            
+            <form class="auth-form" id="loginForm">
+                <div class="input-group">
+                    <label>Email or Username</label>
+                    <input type="email" id="loginEmail" placeholder="example@server.com" required disabled>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPass" placeholder="••••••••" required disabled>
+                </div>
+                <button type="submit" class="btn-primary" disabled>SIGN IN</button>
+                <div id="loginMsg" class="message">Verificando segurança do acesso...</div>
+            </form>
+
+            <div class="divider"><span>Or sign in with</span></div>
+            <div class="social-grid">
+                <button class="btn-social" title="Google" disabled><i class="fab fa-google"></i></button>
+                <button class="btn-social" title="LinkedIn" disabled><i class="fab fa-linkedin-in"></i></button>
+                <button class="btn-social" title="Facebook" disabled><i class="fab fa-facebook-f"></i></button>
+            </div>
+            <p class="footer-link">Don't have an account? <a href="#" onclick="toggleAuth()">Sign up</a></p>
+        </div>
+
+        <div id="signup-section" class="hidden">
+            <h1>Create Account</h1>
+            <p class="subtitle">Register for the client portal</p>
+            
+            <form class="auth-form" id="signupForm">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="John Doe" required disabled>
+                </div>
+                <div class="input-group">
+                    <label>Work Email</label>
+                    <input type="email" id="regEmail" placeholder="name@company.com" required disabled>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="regPass" placeholder="Create a strong password" required disabled>
+                </div>
+                <!-- AI CONSENT CHECKBOX -->
+                <div class="input-group" style="display: flex; align-items: flex-start; gap: 10px; margin-top: 15px; margin-bottom: 25px; text-align: left;">
+                    <input type="checkbox" id="aiConsent" style="width: 20px; height: 20px; flex-shrink: 0; cursor: pointer; accent-color: var(--accent-dark); margin-top: 2px;">
+                    <label for="aiConsent" style="font-size: 0.75rem; color: var(--text-main); line-height: 1.5; text-transform: none; cursor: pointer;">
+                        I agree to the <a href="https://ashuhda-tech.github.io/TerraConnect_Technologies/privacy.html" onclick="alert('Place your Privacy Policy Modal or Link here.')" style="color: var(--accent-dark); text-decoration: underline;">Terms of Service & Privacy Policy</a>, and I explicitly consent to my IoT telemetry and animal data being processed by third-party AI services to generate health insights.
+                    </label>
+                </div>
+                <button type="submit" class="btn-primary" disabled>COMPLETE REGISTRATION</button>
+                <div id="signupMsg" class="message"></div>
+            </form>
+
+            <p class="footer-link">Already have access? <a href="#" onclick="toggleAuth()">Sign in</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- GLOBAL FOOTER INSERIDO NO FINAL DA PÁGINA -->
+<footer>
+    <div class="footer-text">
+        Copyright &copy; 2026 TerraConnect Technologies. All Rights Reserved. | 
+        <a href="license.html"><i class="fas fa-balance-scale"></i> Open-Use License</a>
+    </div>
+</footer>
+
+<script>
+    const introOverlay = document.getElementById('intro-overlay');
+    const introVideo = document.getElementById('introVideo');
+
+    function finishIntro() {
+        introOverlay.style.opacity = '0';
+        setTimeout(() => { introOverlay.style.display = 'none'; }, 1000);
+    }
+
+    if (introVideo) {
+        introVideo.addEventListener('ended', finishIntro);
+        introVideo.addEventListener('error', finishIntro);
+    } else {
+        finishIntro();
+    }
+
+    // ==========================================
+    // --- DYNAMIC BASE64 URL ROUTING LOGIC ---
+    // ==========================================
+    
+    // Master Directory URL encoded in Base64
+    const MASTER_DIRECTORY_B64 = 'aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6cTRZVWUzWjJQeGNsdlJtRWNxaVF1bk1KRXRXNVE5cmxOV21KOXF6RWdQcWM5OVVlVThud3VjYm91SFdzaE1Bdy9leGVj'; 
+
+    // Global variables to hold the decoded URLs in volatile memory
+    let authScriptUrl = "";
+    let pageIdScriptUrl = "";
+
+    async function fetchDatabaseRoutes() {
+        try {
+            const payload = { pageName: "index.html" };
+            const response = await fetch(atob(MASTER_DIRECTORY_B64), {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+            
+            if (result.status === "success") {
+                // Decode the incoming Base64 strings from the server
+                authScriptUrl = atob(result.data["TerraConnect_SignUp"]); 
+                pageIdScriptUrl = atob(result.data["TerraConnect_PageID"]);
+                return true;
+            } else {
+                console.error("Routing Access Denied:", result.message);
+                return false;
+            }
+        } catch (error) {
+            console.error("Failed to connect to Master Directory:", error);
+            return false;
+        }
+    }
+
+    // ==========================================
+    // --- AUTHENTICATION & FORMS LOGIC ---
+    // ==========================================
+
+    function generateUUID() {
+        if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+            return crypto.randomUUID();
+        } else {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = crypto.getRandomValues(new Uint8Array(1))[0] % 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+    }
+
+    function unlockForms() {
+        const elements = document.querySelectorAll('input, button');
+        elements.forEach(el => el.disabled = false);
+        document.getElementById('loginMsg').innerText = "";
+    }
+
+    // The Gatekeeper: Wait for Routes -> Check Captcha -> Unlock
+    grecaptcha.ready(async function() {
+        // 1. Fetch routes before doing anything else
+        const routesLoaded = await fetchDatabaseRoutes();
+        
+        if (!routesLoaded || !authScriptUrl) {
+            document.getElementById('loginMsg').innerText = "System configuration error. Connection refused.";
+            document.getElementById('loginMsg').className = "message error";
+            return; // Halt completely if the backend is unreachable
+        }
+
+        // 2. Proceed with human verification
+        grecaptcha.execute('6LcR7gQtAAAAACIEVWPRYCkIf1DRhBQW_OgfipT8', {action: 'homepage'}).then(async function(token) {
+            try {
+                const payloadCaptcha = { action: 'verify_human', token: token, appSource: window.location.origin };
+
+                const response = await fetch(authScriptUrl, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payloadCaptcha)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === "bot") {
+                    window.location.href = "https://www.google.com";
+                } else {
+                    unlockForms();
+                }
+            } catch (e) {
+                console.error("Erro na verificação:", e);
+                unlockForms(); 
+            }
+        });
+    });
+
+    // --- LOGIN LOGIC ---
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('loginMsg');
+        const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+        const pass = document.getElementById('loginPass').value.trim();
+
+        msg.innerText = "Authenticating securely...";
+        msg.className = "message";
+
+        try {
+            const payloadLogin = { action: 'login_user', email: email, pass: pass, appSource: window.location.origin };
+
+            const response = await fetch(authScriptUrl, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payloadLogin)
+            });
+            
+            const result = await response.json();
+
+            if (result.status === "success") {
+                sessionStorage.setItem('authToken', result.token); 
+                localStorage.setItem('currentUser', JSON.stringify(result.user));
+                
+                msg.innerText = "Success! Entering...";
+                msg.className = "message success";
+                setTimeout(() => { window.location.href = 'home.html'; }, 1000);
+            } else {
+                msg.innerText = result.message || "Invalid E-mail or Password.";
+                msg.className = "message error";
+            }
+        } catch (error) {
+            console.error("Login Error:", error);
+            msg.innerText = "Connection error to authentication server.";
+            msg.className = "message error";
+        }
+    });
+
+    // --- SIGN UP LOGIC ---
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const consentBox = document.getElementById('aiConsent');
+        if (!consentBox.checked) {
+            alert("Action Required: You must agree to the Data Processing & AI Consent terms to create an account.");
+            return; 
+        }
+
+        const msg = document.getElementById('signupMsg');
+        const newUserID = generateUUID(); 
+
+        const payloadSignUp = {
+            action: 'register_user', 
+            name: document.getElementById('regName').value,
+            email: document.getElementById('regEmail').value.toLowerCase().trim(),
+            pass: document.getElementById('regPass').value,
+            id: newUserID,
+            appSource: window.location.origin 
+        };
+
+        const payloadPageID = {
+            action: 'init_user_page',
+            userID: newUserID,
+            appSource: window.location.origin 
+        };
+
+        try {
+            msg.className = "message";
+            msg.innerText = "Registering user profile...";
+            
+            await fetch(authScriptUrl, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payloadSignUp) 
+            });
+            
+            msg.innerText = "Initializing secure environment...";
+            
+            await fetch(pageIdScriptUrl, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payloadPageID) 
+            });
+            
+            msg.innerText = "Successfully registered! Please proceed to Sign in.";
+            msg.className = "message success";
+            e.target.reset();
+            
+        } catch (error) {
+            msg.className = "message error";
+            msg.innerText = "Sign up Error. Please try again.";
+            console.error(error);
+        }
+    });
+    
+    function toggleAuth() {
+        document.getElementById('login-section').classList.toggle('hidden');
+        document.getElementById('signup-section').classList.toggle('hidden');
+    }
+
+    // ==========================================
+    // --- GITHUB AUTO VERSION TRACKER ---
+    // ==========================================
+    async function fetchGitHubVersion() {
+        const flagElement = document.getElementById('gh-version-flag');
+        if (!flagElement) return;
+
+        const repoUrl = 'https://api.github.com/repos/ashuhda-tech/TerraConnect_Technologies/commits?per_page=1';
+
+        try {
+            const response = await fetch(repoUrl);
+            
+            if (response.ok) {
+                const data = await response.json();
+                const latestCommit = data[0];
+                
+                const shortSha = latestCommit.sha.substring(0, 7);
+                const commitDate = new Date(latestCommit.commit.author.date);
+                const formattedDate = `${String(commitDate.getDate()).padStart(2, '0')}/${String(commitDate.getMonth() + 1).padStart(2, '0')}/${commitDate.getFullYear()}`;
+
+                flagElement.innerHTML = `<i class="fas fa-code-branch"></i> Build ${shortSha} (${formattedDate})`;
+            } else {
+                flagElement.innerHTML = `<i class="fas fa-code-branch"></i> Live Build`;
+            }
+        } catch (error) {
+            flagElement.innerHTML = `<i class="fas fa-code-branch"></i> Local Build`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchGitHubVersion);
+</script>
+
+<!-- VERSION FLAG -->
+    <div id="gh-version-flag" class="app-version-flag">
+        <i class="fas fa-spinner fa-spin"></i> Fetching Build...
+    </div>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TerraConnect | Authentication</title>
+    
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/78ffcf4a572347f28b01389a97030d0b88dc6b0f/assets/IMAGE/terraconnect%20ICON_no%20bkgr.png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/78ffcf4a572347f28b01389a97030d0b88dc6b0f/assets/IMAGE/terraconnect%20ICON_no%20bkgr.png">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="TerraConnect Technologies">
+    <meta property="og:description" content="Environmental Animal IOT Monitoring Center">
+    <meta property="og:url" content="https://ashuhda-tech.github.io/TerraConnect_Technologies/">
+
+    <meta property="og:image" content="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/78ffcf4a572347f28b01389a97030d0b88dc6b0f/TERRACONNECT_LOGOBRAND.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TerraConnect Technologies">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/78ffcf4a572347f28b01389a97030d0b88dc6b0f/TERRACONNECT_LOGOBRAND.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {--bg-color: #1a1c20;--card-bg: #070b14;--accent: #d1b38b;--text: #f4e9d8; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; 
+            margin: 0;
+        }
+
+        .content-wrapper {
+            flex-grow: 1; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 20px; 
+            box-sizing: border-box;
+        }
+
+        .app-version-flag {position: fixed;bottom: 10px;left: 10px;background: rgba(0, 0, 0, 0.6);color: rgba(255, 255, 255, 0.3);padding: 4px 8px;border-radius: 4px;font-size: 0.55rem;font-family: 'Inter', monospace;z-index: 99999;pointer-events: none;border: 1px solid rgba(255, 255, 255, 0.1);backdrop-filter: blur(2px);transition: opacity 0.5s;}
+        
+        .dashboard-card {background-color: var(--card-bg);padding: 40px;border-radius: 12px;border: 1px solid #1f2937;text-align: center;max-width: 500px;width: 100%;}
+        h1 { color: var(--accent); margin-bottom: 10px; }
+        .user-id { font-family: monospace; background: #111827; padding: 10px; border-radius: 5px; font-size: 0.8rem; margin: 20px 0; display: block; border: 1px solid #2d3139; }
+        .btn-logout {background: transparent;border: 1px solid var(--accent);color: var(--accent); padding: 10px 20px;cursor: pointer;border-radius: 6px;margin-top: 20px; transition: 0.3s;}
+        .btn-logout:hover {background: var(--accent); color: var(--card-bg);}
+
+        footer {
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            background: rgba(10, 12, 16, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border, #2d3139);
+            position: relative;
+            z-index: 100; 
+            box-sizing: border-box;
+            flex-shrink: 0; 
+        }
+        .footer-text {font-size: 0.8rem;color: #9ca3af;font-family: 'Inter', sans-serif;letter-spacing: 0.5px;}
+        .footer-link {color: var(--accent); text-decoration: none;font-weight: 600;transition: color 0.3s ease;margin-left: 5px;}
+        .footer-link:hover {color: var(--text); }
+        
+    </style>
+</head>
+<body>
+
+    <div class="content-wrapper">
+        <div class="dashboard-card">
+            <i class="fas fa-user-circle fa-4x" style="color: var(--accent); margin-bottom: 20px;"></i>
+            <h1>Welcome, <span id="userName">User</span>!</h1>
+            <p>Your registration on the TerraConnect portal has been located.</p>
+            
+            <div class="user-id">
+                <strong>USER_ID:</strong> <span id="userIdDisplay">Validating data...</span>
+            </div>
+
+            <p id="statusMsg" style="font-size: 0.9rem; color: #9ca3af;">Checking connection to secure servers...</p>
+            
+            <button class="btn-logout" onclick="logout()">Exit the WebPortal</button>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-text">
+            Copyright &copy; 2026 TerraConnect Technologies. All Rights Reserved. | 
+            <a href="license.html" class="footer-link"><i class="fas fa-balance-scale"></i> Open-Use License</a>
+        </div>
+    </footer>
+
+<script>
+    const MASTER_DIRECTORY_B64 = 'aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6cTRZVWUzWjJQeGNsdlJtRWNxaVF1bk1KRXRXNVE5cmxOV21KOXF6RWdQcWM5OVVlVThud3VjYm91SFdzaE1Bdy9leGVj'; 
+
+    let signupScriptUrl = "";
+    let pageIdScriptUrl = "";
+
+    async function fetchDatabaseRoutes() {
+        console.log("[DEBUG] Fetching routes...");
+        try {
+            const payload = { pageName: "home.html" };
+            const masterUrl = atob(MASTER_DIRECTORY_B64).trim();
+            
+            const response = await fetch(masterUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+            
+            if (result.status === "success") {
+                signupScriptUrl = atob(result.data["TerraConnect_SignUp"]).trim(); 
+                pageIdScriptUrl = atob(result.data["TerraConnect_PageID"]).trim();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.error("[ERROR] Master Directory Fail:", error);
+            return false;
+        }
+    }
+
+    async function initHome() {
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        const authToken = sessionStorage.getItem('authToken');
+        const statusMsg = document.getElementById('statusMsg');
+
+        if (!user || !authToken) {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        document.getElementById('userName').innerText = user.name || "Usuário";
+        document.getElementById('userIdDisplay').innerText = user.id || "---";
+
+        statusMsg.innerText = "Connecting to Master Directory...";
+
+        const routesLoaded = await fetchDatabaseRoutes();
+        if (!routesLoaded || !signupScriptUrl || !pageIdScriptUrl) {
+            statusMsg.innerHTML = '<span style="color: #ef4e4e;">System configuration error: Failed to load secure routes. Check console logs.</span>';
+            return;
+        }
+
+        fetchEnvironmentData(user.id, authToken);
+    }
+
+    async function fetchEnvironmentData(userId, token) {
+        const statusMsg = document.getElementById('statusMsg');
+        
+        try {
+            statusMsg.innerText = "Authenticating and syncing User data...";
+            
+            // 1. Validating Plan
+            const planUrl = `${signupScriptUrl}?action=get_plan&userId=${encodeURIComponent(userId)}&authToken=${encodeURIComponent(token)}`;
+            const planRes = await fetch(planUrl);
+            const planText = await planRes.text();
+
+            if (planText.trim().startsWith("<")) {
+                console.error("[ERROR] Server returned HTML instead of JSON for Plan Script. The URL in the spreadsheet might be incorrect or the script is unpublished.");
+                statusMsg.innerHTML = '<span style="color: #ef4e4e;">Server Error: Invalid Database URL. Please verify Master Spreadsheet.</span>';
+                return;
+            }
+
+            const planData = JSON.parse(planText);
+
+            if (planData.status !== "success" || planData.active === false) {
+                statusMsg.innerHTML = '<span style="color: #ef4e4e;">Access Denied: Your plan is expired or invalid. Please check your subscription.</span>';
+                return; 
+            }
+
+            // 2. Validating Pages
+            const envUrl = `${pageIdScriptUrl}?action=get_user_pages&userID=${encodeURIComponent(userId)}&authToken=${encodeURIComponent(token)}`;
+            const envRes = await fetch(envUrl);
+            const envText = await envRes.text();
+
+            if (envText.trim().startsWith("<")) {
+                console.error("[ERROR] Server returned HTML instead of JSON for PageID Script. The URL in the spreadsheet might be incorrect or the script is unpublished.");
+                statusMsg.innerHTML = '<span style="color: #ef4e4e;">Server Error: Invalid Database URL. Please verify Master Spreadsheet.</span>';
+                return;
+            }
+
+            const envData = JSON.parse(envText);
+
+            if (envData.status === "success" && envData.data.length > 0) {
+                const firstEnv = envData.data[0];
+                
+                let user = JSON.parse(localStorage.getItem('currentUser'));
+
+                user.channelId = firstEnv[12]; 
+                user.apiKey = firstEnv[14];    
+                user.planType = planData.plan; 
+                user.planValidDate = "Validated Server-Side"; 
+
+                localStorage.setItem('currentUser', JSON.stringify(user));
+
+                statusMsg.innerText = "Data located and secured! Redirecting...";
+                statusMsg.style.color = "#48bb3a";
+                console.log("[DEBUG] Synchronization Complete. Executing Redirect.");
+                
+                setTimeout(() => { window.location.href = 'maindashboard.html'; }, 1000);
+            } else {
+                statusMsg.innerHTML = '<span style="color: #ef4e4e;">Error: No environment configuration found for this user.</span>';
+            }
+
+        } catch (e) {
+            console.error("[CRITICAL ERROR] Failed during fetchEnvironmentData:", e);
+            statusMsg.innerHTML = '<span style="color: #ef4e4e;">Error connecting to the secure data server.</span>';
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('currentUser');
+        sessionStorage.removeItem('authToken');
+        window.location.href = 'index.html';
+    }
+
+    async function fetchGitHubVersion() {
+        const flagElement = document.getElementById('gh-version-flag');
+        if (!flagElement) return;
+
+        const repoUrl = 'https://api.github.com/repos/ashuhda-tech/TerraConnect_Technologies/commits?per_page=1';
+
+        try {
+            const response = await fetch(repoUrl);
+            
+            if (response.ok) {
+                const data = await response.json();
+                const latestCommit = data[0];
+                
+                const shortSha = latestCommit.sha.substring(0, 7);
+                const commitDate = new Date(latestCommit.commit.author.date);
+                const formattedDate = `${String(commitDate.getDate()).padStart(2, '0')}/${String(commitDate.getMonth() + 1).padStart(2, '0')}/${commitDate.getFullYear()}`;
+
+                flagElement.innerHTML = `<i class="fas fa-code-branch"></i> Build ${shortSha} (${formattedDate})`;
+            } else {
+                flagElement.innerHTML = `<i class="fas fa-code-branch"></i> Live Build`;
+            }
+        } catch (error) {
+            flagElement.innerHTML = `<i class="fas fa-code-branch"></i> Local Build`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initHome();
+        fetchGitHubVersion();
+    });
+</script>
+    <div id="gh-version-flag" class="app-version-flag">
+        <i class="fas fa-spinner fa-spin"></i> Fetching Build...
+    </div>
+</body>
+</html>

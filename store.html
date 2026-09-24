@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TerraConnect | Store & Plans</title>
+    
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/78ffcf4a572347f28b01389a97030d0b88dc6b0f/TERRACONNECT_LOGO.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        @font-face {
+            font-family: 'A760-Roman-Smc';
+            src: url('A760-Roman-Smc Regular.ttf') format('truetype'); 
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {--bg-color: #0a0c10;--card-bg: rgba(30, 30, 30, 0.7);--card-border: rgba(31, 41, 55, 0.5);--accent: #d1b38b;--accent-hover: #e5cba7;--text-main: #f4e9d8;--text-muted: #9ca3af;--border-radius: 15px;--font-standard: 'Inter', sans-serif;--font-title: 'Cinzel', serif;}
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-standard);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column; 
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        
+        /* --- APP VERSION FLAG --- */
+        .app-version-flag {position: fixed;bottom: 10px;left: 10px;background: rgba(0, 0, 0, 0.6);color: rgba(255, 255, 255, 0.3);padding: 4px 8px;border-radius: 4px;font-size: 0.55rem;font-family: 'Inter', monospace;z-index: 99999;pointer-events: none;border: 1px solid rgba(255, 255, 255, 0.1);backdrop-filter: blur(2px);transition: opacity 0.5s;}
+        
+        /* ----- BACKGROUND VIDEO ----- */
+        .video-bg-container {position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: -2;overflow: hidden;}
+        .video-bg-container video {min-width: 100%;min-height: 100%;width: auto;height: auto;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);object-fit: cover;filter: brightness(0.4);}
+        
+        /* ----- HEADER & NAVIGATION ----- */
+        header {padding: 30px 50px;display: flex;justify-content: space-between;align-items: center;border-bottom: 1px solid var(--card-border);background: rgba(10, 12, 16, 0.8);backdrop-filter: blur(10px);position: sticky;top: 0;z-index: 100;}
+        .logo-area h1 {font-family: var(--font-title);color: var(--accent);font-size: 1.8rem;letter-spacing: 2px;}
+        .btn-back {text-decoration: none;color: var(--accent);border: 1px solid var(--accent);padding: 8px 20px;border-radius: 5px;font-size: 0.85rem;transition: 0.3s;font-family: var(--font-title);text-transform: uppercase;}
+        .btn-back:hover {background: var(--accent);color: var(--bg-color);}
+        
+        /* ----- PAGE CONTAINER ----- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+            flex-grow: 1;
+            width: 100%;
+        }
+        
+        .section-title {text-align: center;font-family: var(--font-title);font-size: 2.2rem;color: var(--text-main);margin-bottom: 10px;letter-spacing: 1px; }
+        .section-subtitle {text-align: center;color: var(--text-muted);margin-bottom: 50px;font-size: 1rem;}
+        
+        /* ----- GRID LAYOUTS ----- */
+        .pricing-grid, .product-grid {display: grid;grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));gap: 30px;margin-bottom: 80px; }
+        .tier-grid {display: grid;grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));gap: 20px;margin-bottom: 80px;}
+        
+        /* ----- CARDS ----- */
+        .card {background: var(--card-bg);backdrop-filter: blur(15px);border: 1px solid var(--card-border);border-radius: var(--border-radius);padding: 40px 30px;display: flex;flex-direction: column;transition: transform 0.3s ease, border-color 0.3s ease;}
+        .card:hover {transform: translateY(-5px);border-color: var(--accent);}
+        .card-highlight {border-color: var(--accent);box-shadow: 0 0 20px rgba(209, 179, 139, 0.15);position: relative;}
+        .badge {position: absolute;top: -15px;left: 50%;transform: translateX(-50%);background: var(--accent);color: var(--bg-color);padding: 5px 15px;border-radius: 20px;font-size: 0.75rem;font-weight: 700;text-transform: uppercase;letter-spacing: 1px;}
+        
+        /* ----- TIER SPECIFICS ----- */
+        .tier-level-num {font-family: var(--font-title); font-size: 3rem; color: rgba(209, 179, 139, 0.2); position: absolute; top: 10px; right: 20px; font-weight: bold; pointer-events: none;}
+        .tier-card {position: relative; padding: 30px;}
+
+        /* ----- DYNAMIC TIER TABLE ----- */
+        .table-responsive { width: 100%; overflow-x: auto; background: var(--card-bg); backdrop-filter: blur(15px); border: 1px solid var(--card-border); border-radius: var(--border-radius); padding: 20px; }
+        .tier-table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        .tier-table th, .tier-table td { padding: 15px; text-align: center; border-bottom: 1px solid var(--card-border); }
+        .tier-table th { background: rgba(10, 12, 16, 0.5); color: var(--accent); font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 1px; position: sticky; top: 0; }
+        .tier-table td.feature-name { text-align: left; color: var(--text-main); font-size: 0.95rem; width: 40%; }
+        .tier-table .category-row { background: rgba(209, 179, 139, 0.1); color: var(--accent); font-weight: bold; text-align: left; padding-left: 20px; font-family: var(--font-title); letter-spacing: 1px; text-transform: uppercase; font-size: 0.85rem; }
+        .check-icon { color: var(--accent); font-size: 1.2rem; }
+        .minus-icon { color: rgba(255, 255, 255, 0.1); font-size: 1rem; }
+        .tier-table tr:hover td { background: rgba(255, 255, 255, 0.02); }
+        
+        /* ----- PRICING SPECIFICS ----- */
+        .plan-name {font-family: var(--font-title);font-size: 1.5rem;color: var(--accent);margin-bottom: 15px;}
+        .plan-price {font-size: 2.5rem;font-weight: 700;color: var(--text-main);margin-bottom: 25px;border-bottom: 1px solid var(--card-border);padding-bottom: 25px;}
+        .plan-price span {font-size: 1rem;color: var(--text-muted);font-weight: 400;}
+        .feature-list {list-style: none; margin-bottom: 30px;flex-grow: 1;}
+        .feature-list li {margin-bottom: 15px;font-size: 0.9rem;color: rgba(244, 233, 216, 0.85);display: flex;align-items: flex-start;gap: 10px;}
+        .feature-list i {color: var(--accent);margin-top: 3px;}
+        
+        /* ----- PRODUCT SPECIFICS ----- */
+        .product-icon {text-align: center; margin-bottom: 20px;}
+        .product-icon i {font-size: 3rem; color: var(--accent);}
+        .product-icon img {height: 60px; max-width: 100%; object-fit: contain; display: inline-block;}
+        .product-title {font-family: var(--font-title);font-size: 1.3rem;text-align: center;margin-bottom: 15px; }
+        .product-desc {font-size: 0.85rem;color: var(--text-muted);text-align: center;line-height: 1.6;margin-bottom: 25px;flex-grow: 1;}
+        .product-price {text-align: center;font-size: 1.5rem;font-weight: bold;margin-bottom: 20px;}
+        
+        /* ----- BUTTONS ----- */
+        .btn-action {width: 100%;background: transparent;border: 1px solid var(--accent);color: var(--accent);padding: 12px;border-radius: 5px;font-size: 0.9rem;font-family: var(--font-title);font-weight: bold;cursor: pointer;transition: 0.3s;text-transform: uppercase;}
+        .btn-action:hover, .card-highlight .btn-action {background: var(--accent);color: var(--bg-color);}
+
+        /* ----- INVERTED CARD (JOIN US) ----- */
+        .card-inverted {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg-color);
+        }
+        .card-inverted .product-icon i { color: var(--bg-color); }
+        .card-inverted .product-title { color: var(--bg-color); font-weight: 700; }
+        .card-inverted .product-desc { color: rgba(10, 12, 16, 0.85); }
+        .card-inverted .product-price { color: var(--bg-color); }
+        .card-inverted .btn-action {
+            border-color: var(--bg-color);
+            color: var(--bg-color);
+        }
+        .card-inverted .btn-action:hover {
+            background: var(--bg-color);
+            color: var(--accent);
+        }
+
+        /* ----- QR CODE FLOATING WIDGET ----- */
+        #qr-widget {
+            position: fixed;
+            pointer-events: none; 
+            z-index: 99999;
+            background: rgba(10, 12, 16, 0.95);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(15px, 15px); 
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            text-align: center;
+        }
+        
+        #qr-widget p {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-family: var(--font-title);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* ----- GLOBAL FOOTER ----- */
+        footer {
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            background: rgba(10, 12, 16, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--card-border);
+            position: relative;
+            z-index: 100;
+            flex-shrink: 0; 
+        }
+        .footer-text {font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-standard); letter-spacing: 0.5px;}
+        .footer-link {color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.3s ease; margin-left: 5px;}
+        .footer-link:hover {color: var(--text-main); }
+
+        @media (max-width: 768px) {
+            header { padding: 20px; flex-direction: column; gap: 15px; }
+            .pricing-grid, .product-grid, .tier-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background Video -->
+<div class="video-bg-container">
+    <video autoplay loop muted playsinline>
+        <source src="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/main/assets/VIDEO/RIVER_MAINDASHBOARD.mp4" type="video/mp4">
+    </video>
+</div>
+
+<!-- Header -->
+<header>
+    <div class="logo-area">
+        <h1>TerraConnect</h1>
+    </div>
+    <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Return to Portal</a>
+</header>
+
+<div class="container">
+    
+    <!-- DASHBOARD TIER LEVELS -->
+    <h2 class="section-title">Interface Access Tiers</h2>
+    <p class="section-subtitle">Select your feature level. As your tier increases, more advanced dashboard modules are unlocked. Live capability matrix synced directly from our core database.</p>
+    
+    <div id="tierMatrixContainer" class="table-responsive" style="margin-bottom: 80px;">
+        <div style="text-align:center; padding: 60px;">
+            <i class="fas fa-spinner fa-spin fa-3x" style="color: var(--accent);"></i>
+            <p style="margin-top: 20px; color: var(--text-muted); font-family: var(--font-title);">Syncing Live Matrix Data...</p>
+        </div>
+    </div>
+        
+    <hr style="border: 0.5px solid var(--card-border); margin-bottom: 80px;">
+
+    <!-- DATABASE SUBSCRIPTION SECTION -->
+    <h2 class="section-title">Database Subscriptions</h2>
+    <p class="section-subtitle">Secure cloud storage for your telemetry history. We charge based on data volume and retention.</p>
+
+    <div class="pricing-grid">
+        <!-- Trial / Basic Plan -->
+        <div class="card">
+            <div class="badge">Starter</div>
+            <h3 class="plan-name">Level 1 Tiers</h3>
+            <div class="plan-price">$ Free <span> currently*</span></div>
+            <ul class="feature-list">
+                <li><i class="fas fa-check"></i> Features Level 1 Data Pass-through</li>
+                <li><i class="fas fa-check"></i> Public Shared Server Resources</li>
+                <li><i class="fas fa-check"></i> 3rd party data retention</li>
+                <li><i class="fas fa-check"></i> Without data privacy</li>
+            </ul>
+            <button class="btn-action">Subscribe Now</button>
+        </div>
+
+        <!-- Intermediate Plan -->
+        <div class="card">
+            <div class="badge">Intermediate</div>
+            <h3 class="plan-name">Level 2 & 3 Tiers</h3>
+            <div class="plan-price">$ Free <span> currently*</span></div>
+            <ul class="feature-list">
+                <li><i class="fas fa-check"></i> Features Level 2 & 3 Data Pass-through</li>
+                <li><i class="fas fa-check"></i> Private Shared Server Resources</li>
+                <li><i class="fas fa-check"></i> 3rd party data retention</li>
+                <li><i class="fas fa-check"></i> With part data privacy</li>
+            </ul>
+            <button class="btn-action">Subscribe Now</button>
+        </div>
+
+        <!-- ADVANCED & PRO  -->
+        <div class="card card-highlight">
+            <div class="badge">Advanced & Pro</div>
+            <h3 class="plan-name">Level 4 & 5 Tiers</h3>
+            <div class="plan-price">$ Free <span> currently*</span></div>
+            <ul class="feature-list">
+                <li><i class="fas fa-check"></i> Features Level 4 & 5 Data Pass-through</li>
+                <li><i class="fas fa-check"></i> Private Shared Server Resources</li>
+                <li><i class="fas fa-check"></i> 3rd party data retention</li>
+                <li><i class="fas fa-check"></i> Sensitive data privacy</li>
+            </ul>
+            <button class="btn-action">Subscribe Now</button>
+        </div>
+    </div>
+
+    <hr style="border: 0.5px solid var(--card-border); margin-bottom: 80px;">
+
+    <!-- HARDWARE MODULES SECTION -->
+    <h2 class="section-title">Hardware Ecosystem</h2>
+    <p class="section-subtitle">Official IoT modules pre-configured to sync instantly with your TerraConnect dashboard.</p>
+
+    <div class="product-grid">
+        <!-- Main Sensor -->
+        <div class="card">
+            <div class="product-icon">
+                <img src="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/9909c8d042a000fcdc76705f3fcffeef74150438/assets/IMAGE/LOGOS%20OROBORO_NO_BKGRD---accent.png" alt="Jörmungandr Icon">
+            </div>
+            <h3 class="product-title">Jörmungandr (MS-1) | Actuator (AUnit)</h3>
+            <p class="product-desc">The core brain of your terrarium. Monitors ambient air temperature, humidity and CO2 concentration, soil humidity and water reservoir level on-time. Wi-Fi enabled.</p>
+            <div class="product-price">$TBD</div>
+            <button class="btn-action"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+        </div>
+
+        <!-- Remote Sensor -->
+        <div class="card">
+            <div class="product-icon">
+                <img src="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/9909c8d042a000fcdc76705f3fcffeef74150438/assets/IMAGE/LEAF_LOGO---accent.png" alt="Remote Sensor Icon">
+            </div>
+            <h3 class="product-title">Remote Sensor Unit (RS-1)</h3>
+            <p class="product-desc">Perfect for establishing thermal gradients. Place this to track localized air temperature and humidity, and Soil humidity.</p>
+            <div class="product-price">$TBD</div>
+            <button class="btn-action"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+        </div>
+
+        <!-- Camera Module -->
+        <div class="card">
+            <div class="product-icon">
+                <img src="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/9909c8d042a000fcdc76705f3fcffeef74150438/assets/IMAGE/WOLF1_NO_BACKGROUND---accent.png" alt="Fenrir Icon">
+            </div>
+            <h3 class="product-title">Fenrir (W-1)</h3>
+            <p class="product-desc">Training sound clickers, LEDs with exercise monitoring and safety feature for lost and runnway Pet.</p>
+            <div class="product-price">$TBD</div>
+            <button class="btn-action"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <hr style="border: 0.5px solid var(--card-border); margin-bottom: 80px;">
+
+    <!-- DIY MODULES SECTION -->
+    <h2 class="section-title">Do It Yourself (DIY)</h2>
+    <p class="section-subtitle">Would you rather build it yourself? We are open-source friendly. Access our Bill of Materials, schematics, and code.</p>
+
+    <div class="product-grid">
+        
+        <!-- Join Us (Partnership) - INVERTED CARD -->
+        <div class="card card-inverted">
+            <div class="product-icon"><i class="fas fa-handshake"></i></div>
+            <h3 class="product-title">Join Us</h3>
+            <p class="product-desc">Become part of the mission. Apply as a volunteer and sign our Non-Disclosure Agreement (NDA) to collaborate directly on our core technological ecosystem projects.</p>
+            <div class="product-price">Time & Passion</div>
+            <button class="btn-action" onclick="window.location.href='partnership.html'"><i class="fas fa-user-plus"></i> Apply Now</button>
+        </div>
+        
+        <!-- Suggestion and Requests -->
+        <div class="card">
+            <div class="product-icon"><i class="fas fa-comment-dots"></i></div>
+            <h3 class="product-title">Suggestion & Requests</h3>
+            <p class="product-desc">Suggest or request customized changes, creation, additions... We'll happily incorporate them to better suit all customers and make an overall better experience for all.</p>
+            <div class="product-price">We buy you a coffee</div>
+            <button class="btn-action" onclick="window.location.href='feedback.html'"><i class="fas fa-paper-plane"></i> Reach Us</button>
+        </div>
+        
+        <!-- BOM & Schematics -->
+        <div class="card">
+            <div class="product-icon"><i class="fas fa-cogs"></i></div>
+            <h3 class="product-title">BOM & Schematics</h3>
+            <p class="product-desc">Full part lists for Sensor Units and wiring diagrams needed to build all by yourself.</p>
+            <div class="product-price">Buy me a coffee</div>
+            <button class="btn-action bmc-btn" onclick="window.open('https://buymeacoffee.com/rodrigojuliansantillan', '_blank')"><i class="fas fa-coffee"></i> Buy me a coffee</button>
+        </div>
+
+        <!-- Firmware -->
+        <div class="card">
+            <div class="product-icon"><i class="fas fa-file-code"></i></div>
+            <h3 class="product-title">Firmware Repository</h3>
+            <p class="product-desc">Access our GitHub repository to download the official code.</p>
+            <div class="product-price">Buy me a coffee</div>
+            <button class="btn-action bmc-btn" onclick="window.open('https://buymeacoffee.com/rodrigojuliansantillan', '_blank')"><i class="fas fa-coffee"></i> Buy me a coffee</button>
+        </div>
+
+        <!-- 3D Prints -->
+        <div class="card">
+            <div class="product-icon"><i class="fas fa-cube"></i></div>
+            <h3 class="product-title">3D Print Files</h3>
+            <p class="product-desc">Print your own physical cases. Includes files for the Main Controller Box, Remote Node casing, and safe mounting brackets.</p>
+            <div class="product-price">Buy me a coffee</div>
+            <button class="btn-action bmc-btn" onclick="window.open('https://buymeacoffee.com/rodrigojuliansantillan', '_blank')"><i class="fas fa-coffee"></i> Buy me a coffee</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- GLOBAL FOOTER -->
+<footer>
+    <div class="footer-text">
+        Copyright &copy; 2026 TerraConnect Technologies. All Rights Reserved. | 
+        <a href="license.html" class="footer-link"><i class="fas fa-balance-scale"></i> Open-Use License</a>
+    </div>
+</footer>
+
+<!-- QR CODE HOVER WIDGET -->
+<div id="qr-widget">
+    <div id="bmc-qrcode" style="background: white; padding: 10px; border-radius: 8px; display: inline-block;"></div>
+    <p>SCAN TO DONATE</p>
+</div>
+
+<!-- VERSION FLAG -->
+<div id="gh-version-flag" class="app-version-flag">
+    <i class="fas fa-spinner fa-spin"></i> Fetching Build...
+</div>
+
+    <script>
+// ==========================================
+// --- SECURE ROUTING SYSTEM (WITH DIAGNOSTICS) ---
+// ==========================================
+const MASTER_DIRECTORY_B64 = 'aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6cTRZVWUzWjJQeGNsdlJtRWNxaVF1bk1KRXRXNVE5cmxOV21KOXF6RWdQcWM5OVVlVThud3VjYm91SFdzaE1Bdy9leGVj'; 
+let FLAGS_SCRIPT_URL = "";
+
+// Safe URL parser: Returns standard URLs as-is, decodes if Base64
+function safeParseUrl(val) {
+    if (!val) return "";
+    let str = String(val).trim();
+    if (str.startsWith("http")) return str; 
+    try { return atob(str).trim(); }        
+    catch (e) { return str; }               
+}
+
+async function fetchDatabaseRoutes() {
+    // Starts a collapsible group in the console to keep it clean but highly detailed
+    console.groupCollapsed("🛠️ [DIAGNOSTIC] Master Directory Fetch Event (store.html)");
+    console.log("1. Initiating request sequence...");
+    
+    try {
+        const payload = { pageName: "store.html" };
+        const masterUrl = atob(MASTER_DIRECTORY_B64).trim();
+        console.log("2. Target URL decoded successfully.");
+
+        console.log("3. Sending POST request to Google Apps Script...");
+        const response = await fetch(masterUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+        });
+
+        console.log(`4. HTTP Response Status: ${response.status} ${response.statusText}`);
+
+        const text = await response.text();
+        console.log("5. Raw Response Text:", text.substring(0, 250) + (text.length > 250 ? "...\n[TRUNCATED]" : ""));
+
+        // Diagnostic trap for Google HTML error pages
+        if (text.trim().startsWith("<")) {
+            console.error("❌ ERROR: Server returned HTML instead of JSON. Possible causes:\n- Script deployed incorrectly (Must be 'Execute as: Me' and 'Access: Anyone').\n- Master script crashed and returned a default Google error page.\n- Authorization was unexpectedly required.");
+            console.groupEnd();
+            return false;
+        }
+
+        let result;
+        try {
+            result = JSON.parse(text);
+            console.log("6. Parsed JSON payload successfully:", result);
+        } catch (e) {
+            console.error("❌ ERROR: JSON Parse Failed. The script did not return a valid JSON string.");
+            console.groupEnd();
+            return false;
+        }
+        
+        // Diagnostic trap for functional script errors
+        if (result.status === "success") {
+            console.log("7. Available Keys mapped by Master Script:", Object.keys(result.data));
+            
+            // UPDATED TO MATCH THE CORRECT JSON KEY FROM THE MASTER SCRIPT
+            FLAGS_SCRIPT_URL = safeParseUrl(result.data["TerraConnect_FLAGS_Dashboard View"]);
+            console.log("8. Extracted FLAGS_SCRIPT_URL:", FLAGS_SCRIPT_URL || "[MISSING/EMPTY]");
+
+            if (!FLAGS_SCRIPT_URL) {
+                console.warn("⚠️ WARNING: 'TerraConnect_FLAGS_Dashboard View' key was not found in the database response.");
+            }
+            
+            console.log("✅ Master Directory Routing Successful!");
+            console.groupEnd();
+            return true;
+        } else {
+            console.error("❌ ERROR: Script executed but returned functional failure message:", result.message);
+            console.groupEnd();
+            return false;
+        }
+    } catch (error) {
+        // Diagnostic trap for CORS blocks or Network Drops
+        console.error("❌ CRITICAL FETCH ERROR:", error.name, "-", error.message);
+        console.warn("💡 If this is 'TypeError: Failed to fetch', it is almost certainly a CORS preflight block or a disconnected network.");
+        console.dir(error); 
+        console.groupEnd();
+        return false;
+    }
+}
+
+// ==========================================
+// --- DYNAMIC TIER MATRIX GENERATOR ---
+// ==========================================
+async function loadTierMatrix() {
+    const container = document.getElementById('tierMatrixContainer');
+    
+    // 1. Await Secure Database Routing FIRST
+    const routesLoaded = await fetchDatabaseRoutes();
+    
+    if (!routesLoaded || !FLAGS_SCRIPT_URL) {
+        container.innerHTML = `<div style="text-align:center; padding: 40px; color: #ff5f5f;">Critical System Error: Failed to load secure routes from Master Directory.</div>`;
+        return;
+    }
+
+    try {
+        // 2. Fetch from the dynamically acquired Database URL
+        const response = await fetch(FLAGS_SCRIPT_URL);
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            const data = result.data;
+            const categories = {};
+
+            // Group by category and deduplicate descriptions (finding lowest minPlan)
+            data.forEach(item => {
+                const cat = item.categoria || "Geral";
+                const desc = item.descricao;
+                const tier = parseInt(item.minPlan) || 1;
+
+                if (!categories[cat]) categories[cat] = {};
+                
+                if (!categories[cat][desc] || tier < categories[cat][desc]) {
+                    categories[cat][desc] = tier;
+                }
+            });
+
+            // Build HTML Table
+            let tableHTML = `
+                <table class="tier-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left; padding-left: 20px;">Platform Features</th>
+                            <th>LVL 1</th>
+                            <th>LVL 2</th>
+                            <th>LVL 3</th>
+                            <th>LVL 4</th>
+                            <th>LVL 5</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            for (const [categoryName, features] of Object.entries(categories)) {
+                // Add Category Header Row
+                tableHTML += `
+                    <tr>
+                        <td colspan="6" class="category-row"><i class="fas fa-layer-group" style="margin-right: 8px;"></i> ${categoryName}</td>
+                    </tr>
+                `;
+
+                // Add Feature Rows
+                for (const [featureName, minTier] of Object.entries(features)) {
+                    tableHTML += `<tr><td class="feature-name">${featureName}</td>`;
+                    
+                    // Generate columns for Level 1 to 5
+                    for (let level = 1; level <= 5; level++) {
+                        if (level >= minTier) {
+                            tableHTML += `<td><i class="fas fa-check check-icon"></i></td>`;
+                        } else {
+                            tableHTML += `<td><i class="fas fa-minus minus-icon"></i></td>`;
+                        }
+                    }
+                    tableHTML += `</tr>`;
+                }
+            }
+
+            tableHTML += `</tbody></table>`;
+            container.innerHTML = tableHTML;
+
+        } else {
+            container.innerHTML = `<div style="text-align:center; padding: 40px; color: #ff5f5f;">Failed to load matrix data: ${result.message}</div>`;
+        }
+    } catch (error) {
+        container.innerHTML = `<div style="text-align:center; padding: 40px; color: #ff5f5f;">Connection error trying to reach the database.</div>`;
+        console.error("Matrix Sync Error:", error);
+    }
+}
+
+    // ==========================================
+    // --- GITHUB AUTO VERSION TRACKER ---
+    // ==========================================
+    async function fetchGitHubVersion() {
+        const flagElement = document.getElementById('gh-version-flag');
+        if (!flagElement) return;
+
+        // URL da API pública do GitHub apontando para os commits do seu repositório
+        const repoUrl = 'https://api.github.com/repos/ashuhda-tech/TerraConnect_Technologies/commits?per_page=1';
+
+        try {
+            const response = await fetch(repoUrl);
+            
+            if (response.ok) {
+                const data = await response.json();
+                const latestCommit = data[0];
+                
+                // Pega os 7 primeiros caracteres do hash do commit (Padrão de versão)
+                const shortSha = latestCommit.sha.substring(0, 7);
+                
+                // Pega a data e formata
+                const commitDate = new Date(latestCommit.commit.author.date);
+                const formattedDate = `${String(commitDate.getDate()).padStart(2, '0')}/${String(commitDate.getMonth() + 1).padStart(2, '0')}/${commitDate.getFullYear()}`;
+
+                flagElement.innerHTML = `<i class="fas fa-code-branch"></i> Build ${shortSha} (${formattedDate})`;
+            } else {
+                // Se o GitHub limitar as requisições (Rate Limit)
+                flagElement.innerHTML = `<i class="fas fa-code-branch"></i> Live Build`;
+            }
+        } catch (error) {
+            // Se houver erro de rede
+            flagElement.innerHTML = `<i class="fas fa-code-branch"></i> Local Build`;
+        }
+    }
+
+    // ==========================================
+    // --- BUY ME A COFFEE QR HOVER ENGINE ---
+    // ==========================================
+    function initializeQRWidget() {
+        const qrWidget = document.getElementById('qr-widget');
+        const bmcButtons = document.querySelectorAll('.bmc-btn');
+        const qrContainer = document.getElementById('bmc-qrcode');
+
+        if (!qrWidget || bmcButtons.length === 0) return;
+
+        // Automatically Generate the QR Code for the specific link
+        qrContainer.innerHTML = "";
+        new QRCode(qrContainer, {
+            text: "https://buymeacoffee.com/rodrigojuliansantillan",
+            width: 140,
+            height: 140,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        bmcButtons.forEach(btn => {
+            // Move the widget to follow the cursor
+            btn.addEventListener('mousemove', (e) => {
+                qrWidget.style.left = e.clientX + 'px';
+                qrWidget.style.top = e.clientY + 'px';
+            });
+            
+            // Show widget when mouse enters button
+            btn.addEventListener('mouseenter', () => {
+                qrWidget.style.opacity = '1';
+                qrWidget.style.visibility = 'visible';
+            });
+            
+            // Hide widget when mouse leaves button
+            btn.addEventListener('mouseleave', () => {
+                qrWidget.style.opacity = '0';
+                qrWidget.style.visibility = 'hidden';
+            });
+        });
+    }
+
+    // Ensure all functions execute as soon as the page is ready
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchGitHubVersion();
+        loadTierMatrix(); 
+        initializeQRWidget();
+    });
+    </script>
+</body>
+</html>
