@@ -8,13 +8,11 @@
     <!-- You can update this favicon to a Nhanderu logo later -->
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/IMAGE/NHANDERU_LOGO_NO_BKGRD.png">
     
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         @font-face {font-family: 'A760-Roman-Smc';src: url('A760-Roman-Smc Regular.ttf') format('truetype'); font-weight: normal;font-style: normal;}
-        :root {--bg-color: #0a0c10;--card-bg: rgba(7, 11, 20, 0.85);--card-hover: rgba(17, 24, 39, 0.9);--card-border: rgba(31, 41, 55, 0.5);--accent-dark: #d1b38b;--accent-light: #f4e9d8;--text-main: #f4e9d8;--text-muted: #d1b38b;--border-radius: 10px;--status-ok: #48bb3a;--status-error: #ef4e4e;--font-standard: 'Inter', sans-serif;}
-        * { box-sizing: border-box; margin: 0; padding: 0; }
         
         :root {
             --bg-color: #0a0c10;
@@ -29,10 +27,23 @@
             --font-title: 'A760-Roman-Smc', serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; cursor: none; /* Hides default cursor for custom pointer */ }
         html { scroll-behavior: smooth; }
         body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-standard); overflow-x: hidden; }
         
+        /* ----- CUSTOM CURSOR ----- */
+        .cursor-dot {
+            width: 5px; height: 5px; background-color: var(--accent-light);
+            position: fixed; top: 0; left: 0; transform: translate(-50%, -50%);
+            border-radius: 50%; z-index: 9999; pointer-events: none;
+        }
+        .cursor-outline {
+            width: 30px; height: 30px; border: 1px solid var(--accent-dark);
+            position: fixed; top: 0; left: 0; transform: translate(-50%, -50%);
+            border-radius: 50%; z-index: 9998; pointer-events: none;
+            transition: transform 0.2s ease-out, background-color 0.2s ease-out;
+        }
+
         /* ----- BACKGROUND VIDEO ----- */
         .video-bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; }
         .video-bg-container video { min-width: 100%; min-height: 100%; width: auto; height: auto; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); object-fit: cover; filter: brightness(0.35); }
@@ -40,6 +51,8 @@
         
         /* ----- HEADER ----- */
         header { padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); background: rgba(10, 12, 16, 0.5); backdrop-filter: blur(10px); position: fixed; width: 100%; top: 0; z-index: 100; transition: background 0.3s; }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .logo-area img { height: 45px; width: auto; object-fit: contain; }
         .logo-area h1 { font-family: var(--font-title); color: var(--accent-dark); font-size: 1.8rem; letter-spacing: 2px; text-transform: uppercase; }
         .btn-back { text-decoration: none; color: var(--accent-dark); border: 1px solid var(--accent-dark); padding: 8px 20px; border-radius: 5px; font-size: 0.85rem; transition: 0.4s ease; font-family: var(--font-title); text-transform: uppercase; font-weight: bold; display: flex; align-items: center; gap: 8px;}
         .btn-back:hover { background: var(--accent-dark); color: var(--bg-color); }
@@ -67,36 +80,66 @@
         .value-item p { font-size: 0.95rem; line-height: 1.7; color: var(--text-muted); border: none; padding: 0; }
 
         /* ----- BOTTOM IMAGE PANEL ----- */
-        .image-panel-container { width: 100%; background: var(--bg-color); padding: 80px 20px; position: relative; z-index: 2; border-top: 1px solid var(--card-border); }
+        .image-panel-container { width: 100%; background: var(--bg-color); padding: 80px 20px 40px 20px; position: relative; z-index: 2; border-top: 1px solid var(--card-border); }
         .image-panel { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         
-        /* Changed wrapper to display as block so entire card is clickable */
-        .image-wrapper { display: block; overflow: hidden; border-radius: var(--border-radius); border: 1px solid var(--card-border); aspect-ratio: 16/9; position: relative; text-decoration: none; cursor: pointer; }
+        .image-wrapper { display: block; overflow: hidden; border-radius: var(--border-radius); border: 1px solid var(--card-border); aspect-ratio: 16/9; position: relative; text-decoration: none; }
         .image-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease, filter 0.8s ease; filter: grayscale(60%) brightness(0.8); }
         .image-wrapper:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(1); }
         
-        /* Image Overlay Text */
         .image-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(10, 12, 16, 0.95)); padding: 25px 20px 20px 20px; color: var(--accent-light); font-family: var(--font-title); font-size: 1.1rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; transform: translateY(100%); transition: transform 0.4s ease; display: flex; justify-content: space-between; align-items: center; }
         .image-wrapper:hover .image-overlay { transform: translateY(0); }
         .image-overlay i { font-size: 1rem; color: var(--accent-dark); }
 
-        /* Footer */
-        footer { background: var(--bg-color); text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.85rem; z-index: 2; position: relative; }
+        /* ----- ELEGANT FOOTER (ROLLS ROYCE STYLE) ----- */
+        .site-footer { background: var(--bg-color); color: var(--text-muted); padding: 80px 40px 40px 40px; position: relative; z-index: 2; font-family: var(--font-standard); }
+        .footer-logo-center { text-align: center; margin-bottom: 60px; }
+        .footer-logo-center img { height: 40px; filter: grayscale(100%) brightness(0.8); margin-bottom: 15px; }
+        .footer-logo-center h2 { font-family: var(--font-title); font-size: 1.2rem; color: var(--text-muted); letter-spacing: 4px; text-transform: uppercase; font-weight: normal; }
 
+        .footer-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 40px; gap: 40px; }
+        
+        .footer-links-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; flex-grow: 1; }
+        .footer-col { display: flex; flex-direction: column; gap: 15px; }
+        .footer-col a, .footer-col span { text-decoration: none; color: var(--text-main); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; transition: color 0.3s; }
+        .footer-col a:hover { color: var(--accent-dark); }
+
+        .language-selector { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+        .language-selector span { color: var(--text-muted); margin-right: 5px; }
+        .language-selector a { color: var(--text-muted); }
+        .language-selector a.active { color: var(--text-main); font-weight: bold; }
+
+        .footer-social { display: flex; gap: 20px; align-items: flex-start; justify-content: flex-end; min-width: 200px; }
+        .footer-social a { color: var(--text-muted); font-size: 1.2rem; transition: color 0.3s; }
+        .footer-social a:hover { color: var(--accent-dark); }
+
+        .footer-copyright { text-align: center; margin-top: 80px; font-size: 0.75rem; color: rgba(156, 163, 175, 0.5); letter-spacing: 1px; }
+
+        @media (max-width: 1024px) {
+            .footer-content { flex-direction: column; }
+            .footer-links-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-social { justify-content: flex-start; margin-top: 20px; }
+        }
         @media (max-width: 768px) {
             header { padding: 20px; flex-direction: column; gap: 15px; background: rgba(10, 12, 16, 0.8); }
             .hero h1 { font-size: 2.5rem; letter-spacing: 4px; }
-            .hero p { font-size: 1rem; }
             .philosophy-card { padding: 40px 25px; }
             .values-grid { grid-template-columns: 1fr; gap: 30px; }
+            .footer-links-grid { grid-template-columns: 1fr; }
+            .cursor-dot, .cursor-outline { display: none; } /* Disable custom cursor on mobile */
+            * { cursor: auto; } /* Restore default cursor on mobile */
         }
     </style>
 </head>
 <body>
 
+<!-- CUSTOM CURSOR ELEMENTS -->
+<div class="cursor-dot"></div>
+<div class="cursor-outline"></div>
+
 <!-- BACKGROUND VIDEO -->
 <div class="video-bg-container">
-    <video autoplay loop muted playsinline poster="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/MAIN_WALLPAPER.png">
+    <video id="bg-video" autoplay loop muted playsinline poster="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/MAIN_WALLPAPER.png">
         <source src="https://raw.githubusercontent.com/nhanderu-lab/tupan/main/assets/VIDEO/MAIN_WALLPAPER.mp4" type="video/mp4">
     </video>
 </div>
@@ -105,7 +148,11 @@
 <!-- HEADER -->
 <header>
     <div class="logo-area">
+        <img src="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/IMAGE/NHANDERU_LOGO_NO_BKGRD.png" alt="Nhanderu Logo">
         <h1>Nhanderu</h1>
+    </div>
+    <div class="nav-area">
+        <a href="#store" class="btn-back"><i class="fas fa-store"></i> Store</a>
     </div>
 </header>
 
@@ -160,8 +207,6 @@
 <!-- BOTTOM IMAGE PANEL (PROJECT CARDS) -->
 <div class="image-panel-container">
     <div class="image-panel">
-        
-        <!-- Project 1: Rudá -->
         <a href="#ruda-project" class="image-wrapper">
             <img src="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/WALLPAPER_MAINDASHBOARD.png" alt="Rudá Initiative">
             <div class="image-overlay">
@@ -169,8 +214,6 @@
                 <i class="fas fa-arrow-right"></i>
             </div>
         </a>
-
-        <!-- Project 2: Guaraci (Links to TerraConnect Portal) -->
         <a href="https://ashuhda-tech.github.io/TerraConnect_Technologies/index.html" class="image-wrapper">
             <img src="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/main/assets/IMAGE/COVER%20IMAGE%201.png" alt="Guaraci System - TerraConnect">
             <div class="image-overlay">
@@ -178,8 +221,6 @@
                 <i class="fas fa-link"></i>
             </div>
         </a>
-
-        <!-- Project 3: Sumé -->
         <a href="#sume-project" class="image-wrapper">
             <img src="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/WALLPAPER_MAINDASHBOARD.png" alt="Sumé Architecture">
             <div class="image-overlay">
@@ -187,13 +228,103 @@
                 <i class="fas fa-arrow-right"></i>
             </div>
         </a>
-
     </div>
 </div>
 
-<footer>
-    <p>Copyright &copy; 2026 Nhanderu. Engineered for the Earth.</p>
+<!-- ROLLS-ROYCE STYLE FOOTER -->
+<footer class="site-footer">
+    <div class="footer-logo-center">
+        <img src="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/IMAGE/NHANDERU_LOGO_NO_BKGRD.png" alt="Nhanderu Logo">
+        <h2>Nhanderu</h2>
+    </div>
+
+    <div class="footer-content">
+        <div class="footer-links-grid">
+            
+            <div class="footer-col">
+                <a href="#pressclub">Pressclub</a>
+                <a href="#faqs">FAQs</a>
+                <a href="#sitemap">Site Map</a>
+                <div class="language-selector">
+                    <span>Language</span> 
+                    <a href="#en" class="active">EN</a> | 
+                    <a href="#pt">PT</a> | 
+                    <a href="#nh">NH</a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <a href="#complaints">Complaints</a>
+                <a href="#contact">Contact</a>
+                <a href="#terms">Terms</a>
+            </div>
+
+            <div class="footer-col">
+                <a href="#find-dealer">Find a dealer</a>
+                <a href="#privacy">Privacy</a>
+                <a href="#donotsell">Do not Sell</a>
+            </div>
+
+            <div class="footer-col">
+                <a href="#join">Join Us</a>
+                <a href="#disconnect">Disconnect Resources Access</a>
+            </div>
+
+        </div>
+
+        <div class="footer-social">
+            <a href="#youtube" title="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="#facebook" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#linkedin" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#x" title="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+    </div>
+
+    <div class="footer-copyright">
+        <p>Copyright &copy; 2026 Nhanderu. Engineered for the Earth.</p>
+    </div>
 </footer>
+
+<script>
+    // 1. SET BACKGROUND VIDEO SPEED TO 0.5x
+    const bgVideo = document.getElementById('bg-video');
+    if(bgVideo) {
+        bgVideo.playbackRate = 0.5;
+    }
+
+    // 2. CUSTOM CURSOR LOGIC
+    const cursorDot = document.querySelector('.cursor-dot');
+    const cursorOutline = document.querySelector('.cursor-outline');
+
+    window.addEventListener('mousemove', function(e) {
+        const posX = e.clientX;
+        const posY = e.clientY;
+
+        // Move the dot instantly
+        cursorDot.style.left = `${posX}px`;
+        cursorDot.style.top = `${posY}px`;
+
+        // Move the outline with a slight trailing effect using Web Animations API
+        cursorOutline.animate({
+            left: `${posX}px`,
+            top: `${posY}px`
+        }, { duration: 500, fill: "forwards" });
+    });
+
+    // Add expansion hover effect to links, buttons, and clickable icons
+    const clickables = document.querySelectorAll('a, button, .image-wrapper');
+    clickables.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.8)';
+            cursorOutline.style.backgroundColor = 'rgba(209, 179, 139, 0.15)'; // faint accent color
+        });
+        el.addEventListener('mouseleave', () => {
+            cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
+            cursorOutline.style.backgroundColor = 'transparent';
+        });
+    });
+</script>
 
 </body>
 </html>
