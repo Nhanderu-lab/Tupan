@@ -28,7 +28,7 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; cursor: none; }
         html { scroll-behavior: smooth; }
-        body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-standard); overflow-x: hidden; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-standard); overflow-x: hidden; top: 0 !important; /* Overrides Google Translate gap */ }
         
         /* ----- CUSTOM CURSOR ----- */
         .cursor-dot { width: 5px; height: 5px; background-color: var(--accent-light); position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; }
@@ -100,6 +100,12 @@
 
         @media (max-width: 1024px) { .footer-content { flex-direction: column; } .footer-links-grid { grid-template-columns: repeat(2, 1fr); } .footer-social { justify-content: flex-start; margin-top: 20px; } }
         @media (max-width: 768px) { header { padding: 20px; flex-direction: column; gap: 15px; background: rgba(10, 12, 16, 0.8); } .hero h1 { font-size: 2.5rem; letter-spacing: 4px; } .philosophy-card { padding: 40px 25px; } .values-grid { grid-template-columns: 1fr; gap: 30px; } .footer-links-grid { grid-template-columns: 1fr; } .cursor-dot, .cursor-outline { display: none; } * { cursor: auto; } }
+
+        /* ----- HIDE GOOGLE TRANSLATE UGLY NATIVE UI ----- */
+        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon, .goog-te-gadget-simple, #google_translate_element { display: none !important; }
+        .goog-tooltip { display: none !important; }
+        .goog-tooltip:hover { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
     </style>
 </head>
 <body>
@@ -125,9 +131,8 @@
 </header>
 
 <div class="hero">
-    <!-- Notice the data-i18n attributes added here -->
-    <h1 data-i18n="hero-title">Cultivating Synergy</h1>
-    <p data-i18n="hero-subtitle">Technology and nature operating in perfect balance</p>
+    <h1>Cultivating Synergy</h1>
+    <p>Technology and nature operating in perfect balance</p>
     <a href="#philosophy" class="scroll-indicator"><i class="fas fa-chevron-down"></i></a>
 </div>
 
@@ -244,6 +249,12 @@
     </div>
 </footer>
 
+<!-- HIDDEN GOOGLE TRANSLATE ELEMENT -->
+<div id="google_translate_element"></div>
+
+<!-- GOOGLE TRANSLATE SCRIPT -->
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 <script>
     // 1. VIDEO SPEED
     const bgVideo = document.getElementById('bg-video');
@@ -258,78 +269,60 @@
         cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
     });
     
-    // Add hover effects for buttons, links, and language selectors
+    // Add hover effects
     const clickables = document.querySelectorAll('a, button, .image-wrapper');
     clickables.forEach(el => {
         el.addEventListener('mouseenter', () => { cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.8)'; cursorOutline.style.backgroundColor = 'rgba(209, 179, 139, 0.15)'; });
         el.addEventListener('mouseleave', () => { cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)'; cursorOutline.style.backgroundColor = 'transparent'; });
     });
 
-    // 3. MULTI-LANGUAGE ENGINE
-    // Dictionary storing translations. Add "data-i18n='key-name'" to any HTML tag to link it here.
-    const translations = {
-        en: {
-            "hero-title": "Cultivating Synergy",
-            "hero-subtitle": "Technology and nature operating in perfect balance",
-            "vision-title": "The Vision",
-            "mission-title": "The Mission"
-        },
-        pt: {
-            "hero-title": "Cultivando Sinergia",
-            "hero-subtitle": "Tecnologia e natureza operando em perfeito equilíbrio",
-            "vision-title": "A Visão",
-            "mission-title": "A Missão"
-        },
-        es: {
-            "hero-title": "Cultivando Sinergia",
-            "hero-subtitle": "Tecnología y naturaleza operando en perfecto equilibrio",
-            "vision-title": "La Visión",
-            "mission-title": "La Misión"
-        },
-        it: {
-            "hero-title": "Coltivare la Sinergia",
-            "hero-subtitle": "Tecnologia e natura che operano in perfetto equilibrio",
-            "vision-title": "La Visione",
-            "mission-title": "La Missione"
-        },
-        sw: {
-            "hero-title": "Odla Synergi",
-            "hero-subtitle": "Teknik och natur i perfekt balans",
-            "vision-title": "Visionen",
-            "mission-title": "Uppdraget"
-        },
-        nh: {
-            "hero-title": "[Nheengatu Translation Here]",
-            "hero-subtitle": "[Nheengatu Translation Here]",
-            "vision-title": "[Nheengatu Translation Here]",
-            "mission-title": "[Nheengatu Translation Here]"
-        }
-    };
+    // 3. AUTOMATED TRANSLATION ENGINE (USING GOOGLE)
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'en', autoDisplay: false}, 'google_translate_element');
+    }
 
     const langButtons = document.querySelectorAll('.lang-btn');
-    const translatableElements = document.querySelectorAll('[data-i18n]');
-
+    
     langButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Update active styling
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Update active class
             langButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
-            // Get selected language code
-            const lang = btn.getAttribute('data-lang');
+            const langCode = btn.getAttribute('data-lang');
 
-            // Swap text for all mapped elements
-            translatableElements.forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                // Brief fade out/in effect for elegance
-                el.style.opacity = 0;
-                setTimeout(() => {
-                    if (translations[lang] && translations[lang][key]) {
-                        el.textContent = translations[lang][key];
-                    }
-                    el.style.opacity = 1;
-                }, 150);
-            });
+            // Handle Nheengatu manual redirect
+            if (langCode === 'nh') {
+                window.location.href = 'index_nh.html';
+                return;
+            }
+
+            // Google uses 'sv' for Swedish, but our button is labeled 'sw'
+            const gLang = langCode === 'sw' ? 'sv' : langCode;
+            
+            // Trigger Google Translate dropdown change
+            const selectField = document.querySelector('select.goog-te-combo');
+            
+            if (selectField) {
+                // Return to English (original)
+                if (gLang === 'en') {
+                    // Easiest way to reset Google translate is to clear the cookie and reload
+                    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=" + window.location.hostname + "; path=/;";
+                    window.location.reload();
+                } else {
+                    // Automatically switch the hidden dropdown to selected language
+                    selectField.value = gLang;
+                    selectField.dispatchEvent(new Event('change'));
+                }
+            } else {
+                // Fallback if Google hasn't fully loaded the widget yet
+                document.cookie = `googtrans=/en/${gLang}; path=/`;
+                document.cookie = `googtrans=/en/${gLang}; domain=${window.location.hostname}; path=/`;
+                window.location.reload();
+            }
         });
     });
 </script>
