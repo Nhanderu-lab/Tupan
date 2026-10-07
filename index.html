@@ -72,18 +72,29 @@
         .map-wrapper iframe { width: 100%; height: 100%; border: none; }
         .map-actions { display: flex; justify-content: center; margin-top: 25px; }
 
-        /* ----- BOTTOM IMAGE PANEL ----- */
-        .image-panel-container { width: 100%; background: var(--bg-color); padding: 80px 20px 40px 20px; position: relative; z-index: 2; border-top: 1px solid var(--card-border); }
-        .image-panel { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        /* ----- BOTTOM PROJECT PANELS (ROLLS ROYCE STYLE) ----- */
+        .image-panel-container { width: 100%; background: var(--bg-color); padding: 80px 20px 20px 20px; position: relative; z-index: 2; border-top: 1px solid var(--card-border); }
+        .image-panel { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        
+        .project-card { display: flex; flex-direction: column; gap: 20px; text-align: left; }
         .image-wrapper { display: block; overflow: hidden; border-radius: var(--border-radius); border: 1px solid var(--card-border); aspect-ratio: 16/9; position: relative; text-decoration: none; }
         .image-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease, filter 0.8s ease; filter: grayscale(60%) brightness(0.8); }
         .image-wrapper:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(1); }
+        
         .image-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(10, 12, 16, 0.95)); padding: 25px 20px 20px 20px; color: var(--accent-light); font-family: var(--font-title); font-size: 1.1rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; transform: translateY(100%); transition: transform 0.4s ease; display: flex; justify-content: space-between; align-items: center; }
         .image-wrapper:hover .image-overlay { transform: translateY(0); }
         .image-overlay i { font-size: 1rem; color: var(--accent-dark); }
+        
+        .project-info h3 { font-family: var(--font-standard); color: var(--accent-light); font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; font-weight: 600; }
+        .project-info p { font-size: 0.85rem; line-height: 1.7; color: var(--text-muted); font-weight: 300; padding-right: 15px; }
+
+        /* ----- CULTURAL ATTRIBUTION ----- */
+        .cultural-attribution { max-width: 1000px; margin: 0 auto; padding: 0 20px 60px 20px; text-align: center; position: relative; z-index: 2; }
+        .cultural-attribution p { font-size: 0.75rem; line-height: 1.6; color: rgba(156, 163, 175, 0.5); font-weight: 300; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 30px;}
+        .cultural-attribution strong { color: rgba(209, 179, 139, 0.7); font-weight: 500; text-transform: uppercase; letter-spacing: 1px;}
 
         /* ----- ELEGANT FOOTER ----- */
-        .site-footer { background: var(--bg-color); color: var(--text-muted); padding: 80px 40px 40px 40px; position: relative; z-index: 2; font-family: var(--font-standard); }
+        .site-footer { background: var(--bg-color); color: var(--text-muted); padding: 20px 40px 40px 40px; position: relative; z-index: 2; font-family: var(--font-standard); }
         .footer-logo-center { text-align: center; margin-bottom: 60px; }
         .footer-logo-center img { height: 40px; filter: grayscale(100%) brightness(0.8); margin-bottom: 15px; }
         .footer-logo-center h2 { font-family: var(--font-title); font-size: 1.2rem; color: var(--text-muted); letter-spacing: 4px; text-transform: uppercase; font-weight: normal; }
@@ -187,40 +198,68 @@
     <div class="philosophy-card" id="alliances" style="border-color: rgba(209, 179, 139, 0.4);">
         <h2 class="section-title">Nurture the wild, honor the roots.</h2>
         
-        <!-- The Transparency Disclaimer -->
         <p style="font-size: 0.9rem; color: var(--text-muted); border-left: 2px solid var(--accent-dark); padding-left: 15px; text-align: left; margin-bottom: 30px; font-style: italic;">
             Transparency Notice: Nhanderu operates strictly as an informational bridge. We do not accept, process, or route financial contributions. Explore the decentralized map below to discover and directly support autonomous Civil Society Organizations (OSCs) working on the frontlines of environmental and indigenous preservation in Brazil.
         </p>
 
         <p style="text-align: left;">True synergy with the natural world requires profound respect for the communities that have historically safeguarded it. Use the interactive IPEA database below to filter by region or cause, and actively support the human stewards of these ecosystems.</p>
 
-        <!-- Interactive Map Embed -->
         <div class="map-wrapper">
             <iframe src="https://mapaosc.ipea.gov.br/mapa" title="IPEA Mapa das OSCs" loading="lazy"></iframe>
         </div>
         
-        <!-- Fallback Action Button -->
         <div class="map-actions">
             <a href="https://mapaosc.ipea.gov.br/mapa" target="_blank" class="btn-back"><i class="fas fa-map-marked-alt"></i> Open Full Interactive Map</a>
         </div>
     </div>
 </div>
 
+<!-- BOTTOM PROJECT PANELS WITH THEMATIC DESCRIPTIONS -->
 <div class="image-panel-container">
     <div class="image-panel">
-        <a href="#ruda-project" class="image-wrapper">
-            <img src="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/IMAGE/COVER_IMAGE_RUDÁ.png" alt="Rudá Initiative">
-            <div class="image-overlay"><span>Rudá</span><i class="fas fa-arrow-right"></i></div>
-        </a>
-        <a href="https://ashuhda-tech.github.io/TerraConnect_Technologies/index.html" class="image-wrapper">
-            <img src="https://raw.githubusercontent.com/ashuhda-tech/TerraConnect_Technologies/main/assets/IMAGE/COVER_IMAGE_GUARACI.png" alt="Guaraci System - TerraConnect">
-            <div class="image-overlay"><span>Guaraci</span><i class="fas fa-link"></i></div>
-        </a>
-        <a href="#sume-project" class="image-wrapper">
-            <img src="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/IMAGE/COVER_IMAGE_SUME.png" alt="Sumé Architecture">
-            <div class="image-overlay"><span>Sumé</span><i class="fas fa-arrow-right"></i></div>
-        </a>
+        
+        <!-- Rudá Project Card -->
+        <div class="project-card">
+            <a href="#ruda-project" class="image-wrapper">
+                <img src="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/IMAGE/COVER_IMAGE_RUD%C3%81.png" alt="Rudá Initiative">
+                <div class="image-overlay"><span>Rudá</span><i class="fas fa-arrow-right"></i></div>
+            </a>
+            <div class="project-info">
+                <h3>Rudá Initiative</h3>
+                <p>Named in honor of the Tupi-Guarani god of love and affection. The Rudá Initiative represents our dedication to fostering deep, empathetic connections between human observers and the natural world.</p>
+            </div>
+        </div>
+
+        <!-- Guaraci Project Card -->
+        <div class="project-card">
+            <a href="https://ashuhda-tech.github.io/TerraConnect_Technologies/index.html" class="image-wrapper">
+                <img src="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/IMAGE/COVER_IMAGE_GUARACI.png" alt="Guaraci System - TerraConnect">
+                <div class="image-overlay"><span>Guaraci</span><i class="fas fa-link"></i></div>
+            </a>
+            <div class="project-info">
+                <h3>Guaraci System</h3>
+                <p>Revered as the Sun god and creator of all living beings in indigenous cosmology, Guaraci embodies vital energy. This system brings light and transparent data visibility to the micro-ecosystems it actively monitors.</p>
+            </div>
+        </div>
+
+        <!-- Sumé Project Card -->
+        <div class="project-card">
+            <a href="#sume-project" class="image-wrapper">
+                <img src="https://raw.githubusercontent.com/nhanderu-lab/Tupan/main/assets/IMAGE/COVER_IMAGE_SUME.png" alt="Sumé Architecture">
+                <div class="image-overlay"><span>Sumé</span><i class="fas fa-arrow-right"></i></div>
+            </a>
+            <div class="project-info">
+                <h3>Sumé Architecture</h3>
+                <p>Sumé is the mythological teacher who brought agriculture, social rules, and knowledge to the people. This architecture reflects our goal of structuring open-source educational frameworks and systemic foundations.</p>
+            </div>
+        </div>
+
     </div>
+</div>
+
+<!-- CULTURAL ACKNOWLEDGMENT -->
+<div class="cultural-attribution">
+    <p><strong>Cultural Acknowledgment:</strong> The titles Nhanderu, Guaraci, Rudá, and Sumé originate from Tupi-Guarani cosmology. As a non-profit open-source initiative, we use these names with deep reverence to honor the indigenous heritage of the Brazilian territory and to reflect our core mission of synergy. We claim no ownership over these sacred cultural concepts.</p>
 </div>
 
 <footer class="site-footer">
