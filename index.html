@@ -67,6 +67,11 @@
         .value-item h3 { font-family: var(--font-title); color: var(--accent-light); font-size: 1.2rem; letter-spacing: 1.5px; margin-bottom: 12px; text-transform: uppercase; border-left: 3px solid var(--accent-dark); padding-left: 15px; }
         .value-item p { font-size: 0.95rem; line-height: 1.7; color: var(--text-muted); border: none; padding: 0; }
 
+        /* ----- MAP WRAPPER ----- */
+        .map-wrapper { width: 100%; height: 500px; border-radius: var(--border-radius); border: 1px solid var(--card-border); overflow: hidden; margin-top: 30px; background: rgba(0,0,0,0.5); position: relative; }
+        .map-wrapper iframe { width: 100%; height: 100%; border: none; }
+        .map-actions { display: flex; justify-content: center; margin-top: 25px; }
+
         /* ----- BOTTOM IMAGE PANEL ----- */
         .image-panel-container { width: 100%; background: var(--bg-color); padding: 80px 20px 40px 20px; position: relative; z-index: 2; border-top: 1px solid var(--card-border); }
         .image-panel { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
@@ -103,44 +108,11 @@
         @media (max-width: 768px) { header { padding: 20px; flex-direction: column; gap: 15px; background: rgba(10, 12, 16, 0.8); } .hero h1 { font-size: 2.5rem; letter-spacing: 4px; } .philosophy-card { padding: 40px 25px; } .values-grid { grid-template-columns: 1fr; gap: 30px; } .footer-links-grid { grid-template-columns: 1fr; } .cursor-dot, .cursor-outline { display: none; } * { cursor: auto; } }
 
         /* ----- COMPLETELY OBLITERATE GOOGLE TRANSLATE UI ----- */
-        
-        /* 1. Hide the top banner and any iframes it injects */
-        .goog-te-banner-frame,
-        .goog-te-banner-frame.skiptranslate,
-        iframe.goog-te-banner-frame { 
-            display: none !important; 
-            visibility: hidden !important; 
-            opacity: 0 !important;
-            z-index: -100000 !important;
-        }
-
-        /* 2. Lock the HTML and BODY tags so Google cannot push the page down */
-        html, body {
-            top: 0 !important;
-            margin-top: 0 !important;
-        }
-
-        /* 3. Hide the hover tooltip popup that shows the original text */
-        #goog-gt-tt, .goog-te-balloon-frame { 
-            display: none !important; 
-            visibility: hidden !important; 
-        }
-
-        /* 4. Remove the background color highlighting when hovering over translated text */
-        .goog-text-highlight { 
-            background: transparent !important; 
-            box-shadow: none !important; 
-        }
-
-        /* 5. Keep the actual functional dropdown hidden safely off-screen for the JavaScript to use */
-        #google_translate_element { 
-            position: absolute; 
-            left: -9999px; 
-            top: -9999px; 
-            opacity: 0; 
-            pointer-events: none; 
-            z-index: -9999; 
-        }
+        .goog-te-banner-frame, .goog-te-banner-frame.skiptranslate, iframe.goog-te-banner-frame { display: none !important; visibility: hidden !important; opacity: 0 !important; z-index: -100000 !important; }
+        html, body { top: 0 !important; margin-top: 0 !important; }
+        #goog-gt-tt, .goog-te-balloon-frame { display: none !important; visibility: hidden !important; }
+        .goog-text-highlight { background: transparent !important; box-shadow: none !important; }
+        #google_translate_element { position: absolute; left: -9999px; top: -9999px; opacity: 0; pointer-events: none; z-index: -9999; }
     </style>
 </head>
 <body>
@@ -210,37 +182,29 @@
             </div>
         </div>
     </div>
-</div>
 
-    <!-- ALLIANCES & STEWARDSHIP SECTION -->
+    <!-- ALLIANCES & STEWARDSHIP SECTION (INTERACTIVE MAP) -->
     <div class="philosophy-card" id="alliances" style="border-color: rgba(209, 179, 139, 0.4);">
-        <h2 class="section-title">Decentralized Stewardship</h2>
+        <h2 class="section-title">Nurture the wild, honor the roots.</h2>
         
         <!-- The Transparency Disclaimer -->
         <p style="font-size: 0.9rem; color: var(--text-muted); border-left: 2px solid var(--accent-dark); padding-left: 15px; text-align: left; margin-bottom: 30px; font-style: italic;">
-            Transparency Notice: Nhanderu operates strictly as an informational bridge. We do not accept, process, or route financial contributions. The links below lead directly to the official platforms of autonomous organizations working on the frontlines of environmental and indigenous preservation in Brazil.
+            Transparency Notice: Nhanderu operates strictly as an informational bridge. We do not accept, process, or route financial contributions. Explore the decentralized map below to discover and directly support autonomous Civil Society Organizations (OSCs) working on the frontlines of environmental and indigenous preservation in Brazil.
         </p>
 
-        <p style="text-align: left;">True synergy with the natural world requires profound respect for the communities that have historically safeguarded it. We encourage our network to step beyond technological observation and actively support the human stewards of these ecosystems.</p>
+        <p style="text-align: left;">True synergy with the natural world requires profound respect for the communities that have historically safeguarded it. Use the interactive IPEA database below to filter by region or cause, and actively support the human stewards of these ecosystems.</p>
 
-        <div class="values-grid" style="margin-top: 30px;">
-            
-            <!-- Org 1 -->
-            <div class="value-item" style="border: 1px solid var(--card-border); padding: 20px; border-radius: 8px; background: rgba(0,0,0,0.2);">
-                <h3 style="border-left: none; padding-left: 0;">APIB</h3>
-                <p style="margin-bottom: 15px;">Articulação dos Povos Indígenas do Brasil. The primary national organization representing the rights and territorial defense of Indigenous peoples across Brazil.</p>
-                <a href="https://apiboficial.org/" target="_blank" class="btn-back" style="display: inline-flex; width: max-content; font-size: 0.75rem;"><i class="fas fa-external-link-alt"></i> Official Site</a>
-            </div>
-
-            <!-- Org 2 -->
-            <div class="value-item" style="border: 1px solid var(--card-border); padding: 20px; border-radius: 8px; background: rgba(0,0,0,0.2);">
-                <h3 style="border-left: none; padding-left: 0;">ISA</h3>
-                <p style="margin-bottom: 15px;">Instituto Socioambiental. Dedicated to defending social, collective, and environmental goods and rights, partnering closely with Indigenous and traditional communities.</p>
-                <a href="https://www.socioambiental.org/" target="_blank" class="btn-back" style="display: inline-flex; width: max-content; font-size: 0.75rem;"><i class="fas fa-external-link-alt"></i> Official Site</a>
-            </div>
-
+        <!-- Interactive Map Embed -->
+        <div class="map-wrapper">
+            <iframe src="https://mapaosc.ipea.gov.br/mapa" title="IPEA Mapa das OSCs" loading="lazy"></iframe>
+        </div>
+        
+        <!-- Fallback Action Button -->
+        <div class="map-actions">
+            <a href="https://mapaosc.ipea.gov.br/mapa" target="_blank" class="btn-back"><i class="fas fa-map-marked-alt"></i> Open Full Interactive Map</a>
         </div>
     </div>
+</div>
 
 <div class="image-panel-container">
     <div class="image-panel">
