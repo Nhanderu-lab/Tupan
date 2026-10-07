@@ -40,14 +40,35 @@
         .video-bg-container video { min-width: 100%; min-height: 100%; width: auto; height: auto; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); object-fit: cover; filter: brightness(0.35); }
         .video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(10, 12, 16, 0.4) 0%, rgba(10, 12, 16, 0.8) 100%); z-index: -1; }
         
-        /* ----- HEADER ----- */
-        header { padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); background: rgba(10, 12, 16, 0.5); backdrop-filter: blur(10px); position: fixed; width: 100%; top: 0; z-index: 100; transition: background 0.3s; }
+        /* ----- HEADER & MENU TOGGLE ----- */
+        header { padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); background: rgba(10, 12, 16, 0.5); backdrop-filter: blur(10px); position: fixed; width: 100%; top: 0; z-index: 900; transition: background 0.3s; }
         .logo-area { display: flex; align-items: center; gap: 15px; }
         .logo-area img { height: 45px; width: auto; object-fit: contain; }
         .logo-area h1 { font-family: var(--font-title); color: var(--accent-dark); font-size: 1.8rem; letter-spacing: 2px; text-transform: uppercase; }
-        .btn-back { text-decoration: none; color: var(--accent-dark); border: 1px solid var(--accent-dark); padding: 8px 20px; border-radius: 5px; font-size: 0.85rem; transition: 0.4s ease; font-family: var(--font-title); text-transform: uppercase; font-weight: bold; display: flex; align-items: center; gap: 8px;}
-        .btn-back:hover { background: var(--accent-dark); color: var(--bg-color); }
         
+        /* Two-line Hamburger Icon */
+        .menu-toggle { display: flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 8px; width: 40px; height: 40px; background: transparent; border: none; z-index: 1001; }
+        .menu-toggle span { display: block; width: 30px; height: 2px; background-color: var(--accent-dark); transition: 0.3s ease; }
+        .menu-toggle:hover span { background-color: var(--accent-light); width: 35px; }
+
+        /* ----- SIDE NAVIGATION PANEL ----- */
+        .side-panel-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.4s ease; }
+        .side-panel-overlay.active { opacity: 1; visibility: visible; }
+        
+        .side-panel { position: fixed; top: 0; right: -450px; width: 400px; max-width: 100%; height: 100vh; background: rgba(10, 12, 16, 0.95); border-left: 1px solid var(--card-border); z-index: 1000; transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1); display: flex; flex-direction: column; padding: 40px; overflow-y: auto; }
+        .side-panel.active { right: 0; }
+        
+        .close-btn { align-self: flex-start; color: var(--text-muted); font-size: 1.5rem; background: none; border: none; margin-bottom: 50px; transition: color 0.3s ease; }
+        .close-btn:hover { color: var(--accent-light); }
+        
+        .panel-nav { display: flex; flex-direction: column; gap: 20px; }
+        .panel-category { font-family: var(--font-standard); font-size: 1.1rem; color: var(--text-main); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-top: 20px; margin-bottom: 10px; }
+        
+        .panel-link { display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: var(--text-muted); font-size: 0.95rem; font-weight: 400; letter-spacing: 1px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease; }
+        .panel-link i { font-size: 0.7rem; opacity: 0; transform: translateX(-10px); transition: all 0.3s ease; color: var(--accent-dark); }
+        .panel-link:hover { color: var(--accent-light); padding-left: 10px; }
+        .panel-link:hover i { opacity: 1; transform: translateX(0); }
+
         /* ----- HERO SECTION ----- */
         .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 20px; z-index: 1; }
         .hero h1 { font-family: var(--font-title); font-size: 4.5rem; color: var(--accent-light); text-transform: uppercase; letter-spacing: 8px; margin-bottom: 20px; text-shadow: 0 4px 20px rgba(0,0,0,0.8); }
@@ -58,7 +79,7 @@
 
         /* ----- CONTENT SECTIONS ----- */
         .container { width: 100%; max-width: 1000px; margin: 0 auto; padding: 60px 20px; z-index: 1; position: relative; }
-        .philosophy-card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--border-radius); padding: 60px 70px; margin-bottom: 60px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6); backdrop-filter: blur(15px); text-align: center; }
+        .philosophy-card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--border-radius); padding: 60px 70px; margin-bottom: 60px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6); backdrop-filter: blur(15px); text-align: center; scroll-margin-top: 100px; }
         .section-title { font-family: var(--font-title); font-size: 2rem; color: var(--accent-dark); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 25px; display: inline-block; border-bottom: 1px solid var(--accent-dark); padding-bottom: 10px; }
         .philosophy-card p { font-size: 1.05rem; line-height: 1.9; color: rgba(244, 233, 216, 0.9); margin-bottom: 20px; font-weight: 300; }
         
@@ -79,9 +100,11 @@
         .map-wrapper { width: 100%; height: 500px; border-radius: var(--border-radius); border: 1px solid var(--card-border); overflow: hidden; margin-top: 50px; background: rgba(0,0,0,0.5); position: relative; }
         .map-wrapper iframe { width: 100%; height: 100%; border: none; }
         .map-actions { display: flex; justify-content: center; margin-top: 25px; }
+        .btn-back { text-decoration: none; color: var(--accent-dark); border: 1px solid var(--accent-dark); padding: 8px 20px; border-radius: 5px; font-size: 0.85rem; transition: 0.4s ease; font-family: var(--font-title); text-transform: uppercase; font-weight: bold; display: flex; align-items: center; gap: 8px;}
+        .btn-back:hover { background: var(--accent-dark); color: var(--bg-color); }
 
-        /* ----- BOTTOM PROJECT PANELS (ROLLS ROYCE STYLE) ----- */
-        .image-panel-container { width: 100%; background: var(--bg-color); padding: 80px 20px 20px 20px; position: relative; z-index: 2; border-top: 1px solid var(--card-border); }
+        /* ----- BOTTOM PROJECT PANELS ----- */
+        .image-panel-container { width: 100%; background: var(--bg-color); padding: 80px 20px 20px 20px; position: relative; z-index: 2; border-top: 1px solid var(--card-border); scroll-margin-top: 80px;}
         .image-panel { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
         
         .project-card { display: flex; flex-direction: column; gap: 20px; text-align: left; }
@@ -125,11 +148,12 @@
 
         @media (max-width: 1024px) { .footer-content { flex-direction: column; } .footer-links-grid { grid-template-columns: repeat(2, 1fr); } .footer-social { justify-content: flex-start; margin-top: 20px; } }
         @media (max-width: 768px) { 
-            header { padding: 20px; flex-direction: column; gap: 15px; background: rgba(10, 12, 16, 0.8); } 
+            header { padding: 20px; } 
             .hero h1 { font-size: 2.5rem; letter-spacing: 4px; } 
             .philosophy-card { padding: 40px 25px; } 
             .values-grid, .ngo-grid { grid-template-columns: 1fr; gap: 30px; } 
             .footer-links-grid { grid-template-columns: 1fr; } 
+            .side-panel { width: 85%; right: -100%; }
             .cursor-dot, .cursor-outline { display: none; } * { cursor: auto; } 
         }
 
@@ -159,35 +183,58 @@
         <h1>Nhanderu</h1>
     </div>
     <div class="nav-area">
-        <a href="https://ashuhda-tech.github.io/TerraConnect_Technologies/store.html" class="btn-back"><i class="fas fa-store"></i> Store</a>
+        <!-- Replaced Store button with clean two-line Hamburger toggle -->
+        <button class="menu-toggle" id="menuToggle" aria-label="Open Navigation Menu">
+            <span></span>
+            <span></span>
+        </button>
     </div>
 </header>
+
+<!-- SIDE NAVIGATION PANEL -->
+<div class="side-panel-overlay" id="panelOverlay"></div>
+<nav class="side-panel" id="sideNav">
+    <button class="close-btn" id="closePanelBtn"><i class="fas fa-times"></i></button>
+    
+    <div class="panel-nav">
+        <div class="panel-category">Philosophy</div>
+        <a href="#vision" class="panel-link">The Vision <i class="fas fa-chevron-right"></i></a>
+        <a href="#mission" class="panel-link">The Mission <i class="fas fa-chevron-right"></i></a>
+        <a href="#pillars" class="panel-link">Our Pillars <i class="fas fa-chevron-right"></i></a>
+        <a href="#alliances" class="panel-link">Decentralized Alliances <i class="fas fa-chevron-right"></i></a>
+        
+        <div class="panel-category" style="margin-top: 30px;">Technological Solutions</div>
+        <a href="#solutions" class="panel-link">Rudá Initiative <i class="fas fa-chevron-right"></i></a>
+        <a href="#solutions" class="panel-link">Guaraci System <i class="fas fa-chevron-right"></i></a>
+        <a href="#solutions" class="panel-link">Sumé Architecture <i class="fas fa-chevron-right"></i></a>
+    </div>
+</nav>
 
 <div class="hero">
     <h1>Cultivating Synergy</h1>
     <p>Technology and nature operating in perfect balance</p>
-    <a href="#philosophy" class="scroll-indicator"><i class="fas fa-chevron-down"></i></a>
+    <a href="#vision" class="scroll-indicator"><i class="fas fa-chevron-down"></i></a>
 </div>
 
 <!-- CONTENT SCROLL -->
-<div class="container" id="philosophy">
+<div class="container">
     
     <!-- THE VISION -->
-    <div class="philosophy-card">
+    <div class="philosophy-card" id="vision">
         <h2 class="section-title">The Vision</h2>
         <p>To cultivate a highly conscious world where technology and nature operate in perfect synergy, guided by a profound respect for the whole.</p>
         <p>We envision a future of decentralized self-governance, where society is so socially and ecologically conscious and responsible that collective harmony—and harmony with the surrounding environment—becomes a natural byproduct of our collective consciousness. In this future, the barriers between humans, animals, and the environment dissolve into a cohesive, harmonious ecosystem. Nhanderu exists to reflect this utopian potential through technological development; we believe that when human beings are equipped with educational information, transparency, and high-quality solutions, they naturally choose collective empathy, respect, and balance with their surroundings.</p>
     </div>
 
     <!-- THE MISSION -->
-    <div class="philosophy-card">
+    <div class="philosophy-card" id="mission">
         <h2 class="section-title">The Mission</h2>
         <p>To democratize high-quality environmental data management tools and automation, bridging the knowledge gap between human awareness and natural habitats in order to foster a profound balance and collective respect among living beings and their environments.</p>
         <p>As a non-profit initiative, our goal is not to extract value from users or nature; rather, operating at cost and leveraging technology and communities, we aim to generate synergy among them. Step by step—micro-ecosystem by micro-ecosystem—we provide the open-source tools and collective knowledge needed to deepen our understanding of the environments with which we interact. We are building a freely shared database—while respecting data protection laws—to empower individuals to become conscious stewards of their natural world.</p>
     </div>
 
     <!-- CORE VALUES -->
-    <div class="philosophy-card">
+    <div class="philosophy-card" id="pillars">
         <h2 class="section-title" style="border:none; margin-bottom: 0;">Our Pillars</h2>
         <div class="values-grid">
             <div class="value-item">
@@ -218,14 +265,6 @@
         </p>
 
         <p style="text-align: left; margin-bottom: 10px;">True synergy with the natural world requires profound respect for the communities that have historically safeguarded it. To help guide your impact, we have highlighted a few of the many highly respected, well-known institutions doing critical work below. <strong>However, these serve only as starting points. We highly encourage using the interactive IPEA database map at the bottom of this section to filter by your region or specific cause to find and support localized initiatives.</strong></p>
-
-        <div class="map-wrapper">
-            <iframe src="https://mapaosc.ipea.gov.br/mapa" title="IPEA Mapa das OSCs" loading="lazy"></iframe>
-        </div>
-        
-        <div class="map-actions">
-            <a href="https://mapaosc.ipea.gov.br/mapa" target="_blank" class="btn-back"><i class="fas fa-map-marked-alt"></i> Open Full Interactive Map</a>
-        </div>
 
         <!-- TWO COLUMN NGO LIST -->
         <div class="ngo-grid">
@@ -273,7 +312,7 @@
                     <p>Dozens of simultaneous projects focused on biodiversity conservation and the sustainable use of natural resources.</p>
                 </div>
                 <div class="ngo-item">
-                    <h4>SOS Atlantic Forest Foundation (Fundação SOS Mata Atlântica)<a href="https://www.sosma.org.br/" target="_blank"><i class="fas fa-external-link-alt"></i></a></h4>
+                    <h4>SOS Atlantic Forest Foundation <a href="https://www.sosma.org.br/" target="_blank"><i class="fas fa-external-link-alt"></i></a></h4>
                     <p>Has facilitated the planting of over 44 million trees and coordinates river monitoring efforts involving thousands of volunteers.</p>
                 </div>
                 <div class="ngo-item">
@@ -318,11 +357,19 @@
                 </div>
             </div>
         </div>
+
+        <div class="map-wrapper">
+            <iframe src="https://mapaosc.ipea.gov.br/mapa" title="IPEA Mapa das OSCs" loading="lazy"></iframe>
+        </div>
+        
+        <div class="map-actions">
+            <a href="https://mapaosc.ipea.gov.br/mapa" target="_blank" class="btn-back"><i class="fas fa-map-marked-alt"></i> Open Full Interactive Map</a>
+        </div>
     </div>
 </div>
 
-<!-- BOTTOM PROJECT PANELS WITH THEMATIC DESCRIPTIONS -->
-<div class="image-panel-container">
+<!-- BOTTOM PROJECT PANELS (SOLUTIONS) -->
+<div class="image-panel-container" id="solutions">
     <div class="image-panel">
         
         <!-- Rudá Project Card -->
@@ -442,14 +489,40 @@
         cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
     });
     
-    // Add hover effects
-    const clickables = document.querySelectorAll('a, button, .image-wrapper, .ngo-item a');
+    // Add hover effects - Included side menu toggle and links
+    const clickables = document.querySelectorAll('a, button, .image-wrapper, .ngo-item a, .menu-toggle, .close-btn, .panel-link');
     clickables.forEach(el => {
         el.addEventListener('mouseenter', () => { cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.8)'; cursorOutline.style.backgroundColor = 'rgba(209, 179, 139, 0.15)'; });
         el.addEventListener('mouseleave', () => { cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)'; cursorOutline.style.backgroundColor = 'transparent'; });
     });
 
-    // 3. AUTOMATED TRANSLATION ENGINE (USING GOOGLE)
+    // 3. SIDE NAVIGATION PANEL LOGIC
+    const menuToggle = document.getElementById('menuToggle');
+    const sideNav = document.getElementById('sideNav');
+    const panelOverlay = document.getElementById('panelOverlay');
+    const closePanelBtn = document.getElementById('closePanelBtn');
+    const panelLinks = document.querySelectorAll('.panel-link');
+
+    function openPanel() {
+        sideNav.classList.add('active');
+        panelOverlay.classList.add('active');
+    }
+
+    function closePanel() {
+        sideNav.classList.remove('active');
+        panelOverlay.classList.remove('active');
+    }
+
+    menuToggle.addEventListener('click', openPanel);
+    closePanelBtn.addEventListener('click', closePanel);
+    panelOverlay.addEventListener('click', closePanel);
+    
+    // Close panel when a link is clicked
+    panelLinks.forEach(link => {
+        link.addEventListener('click', closePanel);
+    });
+
+    // 4. AUTOMATED TRANSLATION ENGINE (USING GOOGLE)
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
             pageLanguage: 'en',
